@@ -1,0 +1,45 @@
+import 'package:flutter/material.dart';
+import 'package:pokedex/pull_pokedex_api.dart';
+import 'package:provider/provider.dart';
+
+class MyHomePage extends StatelessWidget {
+  const MyHomePage({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Pokedex'),
+      ),
+      body: Column(
+        children: [
+          TextField(
+            onSubmitted: (String value) {
+              context.read<PokemonState>().setPokemonName(value);
+            
+            },
+          ),
+          Center(
+            child: FutureBuilder<Pokemon>(
+              future: fetchPokemon(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return Column(
+                    children: [
+                      Text(snapshot.data!.name.toUpperCase()),
+                      Text("ID: " + snapshot.data!.id.toString()),
+                      Text("Height: " + snapshot.data!.height.toString()),
+                      Text("Weight: " + snapshot.data!.weight.toString()),
+                    ],
+                  );
+                } else if (snapshot.hasError) {
+                  return Text('${snapshot.error}');
+                }
+                return const CircularProgressIndicator();
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
