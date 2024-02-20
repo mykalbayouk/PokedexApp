@@ -14,7 +14,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Pokedex'),
+        title: const Text('Pokedex'),
       ),
       body: Column(
         children: [
@@ -33,9 +33,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   return Column(
                     children: [
                       Text(snapshot.data!.name.toUpperCase()),
-                      Text("ID: " + snapshot.data!.id.toString()),
-                      Text("Height: " + snapshot.data!.height.toString()),
-                      Text("Weight: " + snapshot.data!.weight.toString()),
+                      Text("ID: ${snapshot.data!.id}"),
+                      Text("Height: ${snapshot.data!.height}"),
+                      Text("Weight: ${snapshot.data!.weight}"),
                       Image(
                         image: snapshot.data!.image.image,
                       ),
