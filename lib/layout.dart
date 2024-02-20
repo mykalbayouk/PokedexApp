@@ -2,8 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:pokedex/pull_pokedex_api.dart';
 import 'package:provider/provider.dart';
 
-class MyHomePage extends StatelessWidget {
+class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -14,8 +20,9 @@ class MyHomePage extends StatelessWidget {
         children: [
           TextField(
             onSubmitted: (String value) {
-              context.read<PokemonState>().setPokemonName(value);
-            
+              setState(() {
+                context.read<PokemonState>().setPokemonName(value);
+              });
             },
           ),
           Center(
@@ -29,6 +36,9 @@ class MyHomePage extends StatelessWidget {
                       Text("ID: " + snapshot.data!.id.toString()),
                       Text("Height: " + snapshot.data!.height.toString()),
                       Text("Weight: " + snapshot.data!.weight.toString()),
+                      Image(
+                        image: snapshot.data!.image.image,
+                      ),
                     ],
                   );
                 } else if (snapshot.hasError) {

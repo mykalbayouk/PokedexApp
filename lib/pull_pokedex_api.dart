@@ -20,6 +20,7 @@ class Pokemon {
   final int id;
   final int height;
   final int weight;
+  final Image image;
   final List types;
 
   Pokemon({
@@ -27,6 +28,7 @@ class Pokemon {
     required this.id,
     required this.height,
     required this.weight,
+    required this.image,
     required this.types,
   });
 
@@ -36,6 +38,7 @@ class Pokemon {
       id: json['id'],
       height: json['height'],
       weight: json['weight'],
+      image: Image.network(json['sprites']['front_default']),
       types: json['types'],
     );
   }
