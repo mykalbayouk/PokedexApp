@@ -10,6 +10,24 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  List<DropdownMenuEntry<String>> dropdownMenuEntries = [
+    const DropdownMenuEntry(
+      value: 'pokemon',
+      label: 'Pokemon',
+    ),
+    const DropdownMenuEntry(
+      value: 'item',
+      label: 'Item',
+    ),
+    const DropdownMenuEntry(
+      value: 'location', 
+      label: 'Location',
+    ),
+    const DropdownMenuEntry(
+      value: 'region',
+      label: 'region',
+    ),
+  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,6 +36,14 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Column(
         children: [
+          DropdownMenu(
+            dropdownMenuEntries: dropdownMenuEntries
+                .map((DropdownMenuEntry<String> e) => e)
+                .toList(),
+            onSelected: (String? value) {
+                context.read<PokemonState>().setType(value!);
+            },
+            ),
           TextField(
             onSubmitted: (String value) {
               setState(() {
@@ -26,16 +52,16 @@ class _MyHomePageState extends State<MyHomePage> {
             },
           ),
           Center(
-            child: FutureBuilder<Pokemon>(
-              future: fetchPokemon(),
+            child: FutureBuilder<Item>(
+              future: fetchItem(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   return Column(
                     children: [
                       Text(snapshot.data!.name.toUpperCase()),
                       Text("ID: ${snapshot.data!.id}"),
-                      Text("Height: ${snapshot.data!.height}"),
-                      Text("Weight: ${snapshot.data!.weight}"),
+                      Text("Height: ${snapshot.data!.category}"),
+                      Text("Weight: ${snapshot.data!.cost}"),
                       Image(
                         image: snapshot.data!.image.image,
                       ),
