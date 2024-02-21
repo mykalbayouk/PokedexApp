@@ -19,7 +19,7 @@ class MainApp extends StatelessWidget {
       ],
       builder: (context, child) { 
         return MaterialApp(
-          title: 'RNG App',
+          title: 'Pokedex App',
           theme: ThemeData(
             useMaterial3: true,
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.red.shade100),
