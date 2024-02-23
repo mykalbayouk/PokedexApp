@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pokedex/layout.dart';
-import 'package:pokedex/pull_pokedex_api.dart';
+import 'package:pokedex/api.dart';
 import 'package:provider/provider.dart';
 
 
@@ -15,7 +15,7 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => PokemonState()),
+        ChangeNotifierProvider(create: (context) => APIState()),
       ],
       builder: (context, child) { 
         return MaterialApp(
