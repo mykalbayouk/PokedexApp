@@ -3,11 +3,12 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:pokedex/PokeObjects/pokemon.dart';
 import 'package:pokedex/api.dart';
+import 'package:pokedex/string_extension.dart';
 
-  Future<Pokemon> fetchPokemon(int id) async {
-    final response = await getData('pokemon', id.toString());
-    return Pokemon.fromJson(jsonDecode(response));
-  }
+Future<Pokemon> fetchPokemon(int id) async {
+  final response = await getData('pokemon', id.toString());
+  return Pokemon.fromJson(jsonDecode(response));
+}
 
 FutureBuilder<Pokemon> setupPokemon(int id) {
   return FutureBuilder<Pokemon>(
@@ -29,11 +30,28 @@ FutureBuilder<Pokemon> setupPokemon(int id) {
                   children: [
                     DexType(id),
                     SizedBox(width: 20),
-                    Text('#: ' + snapshot.data!.id.toString()),
+                    Text('#' + snapshot.data!.id.toString()),
                   ],
                 ),
                 PokeImage(snapshot.data!.image),
-                Text(snapshot.data!.name),
+                Card(
+                  color: Theme.of(context).secondaryHeaderColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  elevation: 5,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      snapshot.data!.name.capitalize(),
+                      style: TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                    ),
+                  ),
+                ),
                 SizedBox(height: 200),
                 PokeList(),
               ],
@@ -89,7 +107,7 @@ class PokeImage extends StatelessWidget {
                   image: AssetImage('assets/images/pokedexFrame.png'),
                   height: MediaQuery.of(context).size.height,
                   width: MediaQuery.of(context).size.width,
-                  color: Color.fromARGB(255, 53, 53, 53),
+                  color: Theme.of(context).primaryColor,
                 ),
               ),
             ],
@@ -124,7 +142,6 @@ class DexType extends StatelessWidget {
     }
   }
 
- 
   @override
   Widget build(BuildContext context) {
     return Text('PokeDex: ' + getDexType(id));
