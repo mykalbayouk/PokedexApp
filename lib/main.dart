@@ -15,7 +15,7 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => APIState()),
+        ChangeNotifierProvider(create: (context) => PokeAppState()),
       ],
       builder: (context, child) { 
         return MaterialApp(

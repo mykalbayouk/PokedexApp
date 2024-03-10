@@ -1,9 +1,34 @@
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:pokedex/PokeObjects/pokemon.dart';
 import 'package:pokedex/api.dart';
-import 'package:pokedex/string_extension.dart';
+import 'package:pokedex/Utilities/string_extension.dart';
+import 'package:provider/provider.dart';
+
+
+class PokeAppState extends ChangeNotifier {
+  int id = 1;
+  void increment() {
+    id++;
+    notifyListeners();
+  }
+  void decrement() {
+    id--;
+    notifyListeners();
+  }
+
+  void setId(int newId) {
+    if (newId > 0 && newId <= 1025) {
+      id = newId;
+    } else {
+      id = 1;
+    }
+    notifyListeners();
+  }
+}
 
 Future<Pokemon> fetchPokemon(int id) async {
   final response = await getData('pokemon', id.toString());
@@ -16,11 +41,6 @@ FutureBuilder<Pokemon> setupPokemon(int id) {
     builder: (context, snapshot) {
       if (snapshot.hasData) {
         return Scaffold(
-          appBar: AppBar(
-            backgroundColor: Theme.of(context).primaryColor,
-            title: const Text('Pokedex App'),
-          ),
-          body: Scaffold(
             backgroundColor: Theme.of(context).primaryColorLight,
             body: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -56,7 +76,6 @@ FutureBuilder<Pokemon> setupPokemon(int id) {
                 PokeList(),
               ],
             ),
-          ),
         );
       } else if (snapshot.hasError) {
         return Text('${snapshot.error}');
@@ -76,7 +95,72 @@ class PokemonMain extends StatefulWidget {
 class _PokemonMainState extends State<PokemonMain> {
   @override
   Widget build(BuildContext context) {
-    return setupPokemon(501);
+    var appstate = context.watch<PokeAppState>();
+    int id = appstate.id;
+    return Scaffold(
+      backgroundColor: Theme.of(context).primaryColorLight,
+      appBar: AppBar(
+        title: const Text(
+          'Pokedex',
+          style: TextStyle(
+            fontSize: 30,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        backgroundColor: Theme.of(context).primaryColor,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      if (id > 1) {
+                        appstate.decrement();
+                      } else {
+                        appstate.setId(1025);
+                      }
+                    });
+                  },
+                  child: const Text('-'),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      if (id < 1025) {
+                       appstate.increment();
+                      } else {
+                        appstate.setId(1);
+                      }
+                    });
+                  },
+                  child: const Text('+'),
+                ),
+                Expanded(
+                  child: TextField(
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Enter Pokemon ID',
+                    ),
+                    onSubmitted: (String value) {
+                      appstate.setId(int.parse(value));
+                    },
+                  ),
+                ),
+              ],
+            ),
+            Expanded(
+              child: setupPokemon(id)
+              ),
+          ],
+        ),
+      ),
+    );
   }
 }
 
