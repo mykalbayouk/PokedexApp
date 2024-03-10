@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pokedex/layout.dart';
+import 'package:pokedex/pokemonMain.dart';
 import 'package:pokedex/api.dart';
 import 'package:provider/provider.dart';
 
@@ -22,9 +22,9 @@ class MainApp extends StatelessWidget {
           title: 'Pokedex App',
           theme: ThemeData(
             useMaterial3: true,
-            colorScheme: ColorScheme.fromSeed(seedColor: Colors.red.shade100),
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.red),
           ),
-          home: const MyHomePage(),
+          home: const PokemonMain(),
         );
       },
     );

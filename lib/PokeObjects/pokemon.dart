@@ -1,5 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:pokedex/api.dart';
+import 'package:pokedex/PokeObjects/region.dart';
 
 class Pokemon {
   final String name;
@@ -24,19 +26,10 @@ class Pokemon {
       id: json['id'],
       height: json['height'],
       weight: json['weight'],
-      image: Image.network(json['sprites']['front_default']),
+      image: Image.network(json['sprites']['other']['official-artwork']['front_default']),
       types: json['types'],
     );
   }
 }
 
-// location of this code is TBD
 
-// Future<Pokemon> fetchPokemon(int id) async {
-//   final response = await getData('pokemon', id.toString());
-//   if (response.statusCode == 200) {
-//     return Pokemon.fromJson(response.body);
-//   } else {
-//     throw Exception('Failed to load Pokemon');
-//   }
-// }
