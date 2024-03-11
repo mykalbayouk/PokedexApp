@@ -40,9 +40,12 @@ FutureBuilder<Pokemon> setupPokemon(int id) {
     future: fetchPokemon(id),
     builder: (context, snapshot) {
       if (snapshot.hasData) {
-        return Scaffold(
-            backgroundColor: Theme.of(context).primaryColorLight,
-            body: Column(
+        return Container(
+            decoration: BoxDecoration(
+              color: Theme.of(context).primaryColorLight,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Row(
@@ -72,8 +75,7 @@ FutureBuilder<Pokemon> setupPokemon(int id) {
                     ),
                   ),
                 ),
-                SizedBox(height: 200),
-                PokeList(),
+                //PokeList(),
               ],
             ),
         );
@@ -92,7 +94,19 @@ class PokemonMain extends StatefulWidget {
   State<PokemonMain> createState() => _PokemonMainState();
 }
 
-class _PokemonMainState extends State<PokemonMain> {
+class _PokemonMainState extends State<PokemonMain> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+    void initState() {
+      super.initState();
+      _controller = AnimationController(
+        vsync: this,
+        duration: const Duration(seconds: 2),
+      );
+      super.initState();
+    }
+
   @override
   Widget build(BuildContext context) {
     var appstate = context.watch<PokeAppState>();
@@ -100,22 +114,40 @@ class _PokemonMainState extends State<PokemonMain> {
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColorLight,
       appBar: AppBar(
-        title: const Text(
-          'Pokedex',
-          style: TextStyle(
-            fontSize: 30,
-            fontWeight: FontWeight.bold,
+        backgroundColor: Theme.of(context).primaryColor,
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(4.0),
+          child: RotationTransition(
+            turns: Tween(begin: 0.0, end: 1.0).animate(_controller),
+            child: IconButton(
+              icon: Image.asset(
+                'assets/images/Pokeball.png',
+                height: MediaQuery.of(context).size.height / 20,
+                width: MediaQuery.of(context).size.width,
+              ),
+              onPressed: () {
+                _controller.forward(from: 0.0);
+              },
+              ),
           ),
         ),
-        backgroundColor: Theme.of(context).primaryColor,
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
             SizedBox(height: 20),
+            TextField(
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Enter Pokemon ID',
+              ),
+              onSubmitted: (String value) {
+                appstate.setId(int.parse(value));
+              },
+            ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ElevatedButton(
                   onPressed: () {
@@ -127,7 +159,7 @@ class _PokemonMainState extends State<PokemonMain> {
                       }
                     });
                   },
-                  child: const Text('-'),
+                  child: const Text('<'),
                 ),
                 ElevatedButton(
                   onPressed: () {
@@ -139,24 +171,11 @@ class _PokemonMainState extends State<PokemonMain> {
                       }
                     });
                   },
-                  child: const Text('+'),
-                ),
-                Expanded(
-                  child: TextField(
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Enter Pokemon ID',
-                    ),
-                    onSubmitted: (String value) {
-                      appstate.setId(int.parse(value));
-                    },
-                  ),
+                  child: const Text('>'),
                 ),
               ],
             ),
-            Expanded(
-              child: setupPokemon(id)
-              ),
+            setupPokemon(id),
           ],
         ),
       ),
