@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,24 +9,28 @@ import 'package:pokedex/api.dart';
 import 'package:pokedex/Utilities/string_extension.dart';
 import 'package:provider/provider.dart';
 
-
 class PokeAppState extends ChangeNotifier {
   int id = 1;
+  String name = "bulbasaur";
+  bool isName = false;
   void increment() {
     id++;
     notifyListeners();
   }
+
   void decrement() {
     id--;
     notifyListeners();
   }
 
   void setId(int newId) {
-    if (newId > 0 && newId <= 1025) {
-      id = newId;
-    } else {
-      id = 1;
-    }
+    id = newId;
+    notifyListeners();
+  }
+
+  void setName(String newName) {
+    name = newName;
+    isName = true;
     notifyListeners();
   }
 }
@@ -35,49 +40,61 @@ Future<Pokemon> fetchPokemon(int id) async {
   return Pokemon.fromJson(jsonDecode(response));
 }
 
-FutureBuilder<Pokemon> setupPokemon(int id) {
+Future<Pokemon> fetchPokemonName(String name) async {
+  final response = await getData('pokemon', name);
+  return Pokemon.fromJson(jsonDecode(response));
+}
+
+FutureBuilder<Pokemon> setupPokemon(int id, String name, bool isName) {
   return FutureBuilder<Pokemon>(
-    future: fetchPokemon(id),
+    future: isName ? fetchPokemonName(name) : fetchPokemon(id),
     builder: (context, snapshot) {
       if (snapshot.hasData) {
         return Container(
-            decoration: BoxDecoration(
-              color: Theme.of(context).primaryColorLight,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    DexType(id),
-                    SizedBox(width: 20),
-                    Text('#' + snapshot.data!.id.toString()),
-                  ],
-                ),
-                PokeImage(snapshot.data!.image),
-                Card(
-                  color: Theme.of(context).secondaryHeaderColor,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  elevation: 5,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      snapshot.data!.name.capitalize(),
-                      style: TextStyle(
-                        fontSize: 30,
-                        fontWeight: FontWeight.bold,
-                        color: Theme.of(context).primaryColor,
+          decoration: BoxDecoration(
+            color: Theme.of(context).primaryColorLight,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  DexType(id),
+                  SizedBox(width: 110),
+                  Text(
+                    'No. ' + snapshot.data!.id.toString(),
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).primaryColor,
                       ),
+                    ),
+                ],
+              ),
+              PokeImage(snapshot.data!.image),
+              Card(
+                color: Theme.of(context).secondaryHeaderColor,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                elevation: 5,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    snapshot.data!.name.capitalize(),
+                    style: TextStyle(
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).primaryColor,
                     ),
                   ),
                 ),
-                //PokeList(),
-              ],
-            ),
+              ),
+              //PokeList(),
+            ],
+          ),
         );
       } else if (snapshot.hasError) {
         return Text('${snapshot.error}');
@@ -94,32 +111,120 @@ class PokemonMain extends StatefulWidget {
   State<PokemonMain> createState() => _PokemonMainState();
 }
 
-class _PokemonMainState extends State<PokemonMain> with SingleTickerProviderStateMixin {
+class _PokemonMainState extends State<PokemonMain>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
 
-  @override
-    void initState() {
-      super.initState();
-      _controller = AnimationController(
-        vsync: this,
-        duration: const Duration(seconds: 2),
-      );
-      super.initState();
+  List<String> pokelist (){
+    var file = File('assets/raw/poke_list.txt');
+    for (var line in file.readAsLinesSync()) {
+      print(line);
     }
+    return file.readAsLinesSync();
+  }
+
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 1),
+    );
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+  void showPokemonPopUp(BuildContext context) {
+    pokelist();
+    var appstate = context.read<PokeAppState>();
+    var my_value = '';
+    bool isName = false;
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Theme.of(context).primaryColor,
+          title: Text(
+            'Enter a Pokemon ID or Name',
+            style: TextStyle(
+              color: Theme.of(context).primaryColorLight,
+            ),
+          ),
+          content: TextField(
+            style: TextStyle(
+              color: Theme.of(context).primaryColorLight,
+            ),
+            decoration: InputDecoration(
+              hintText: 'ID: 1-1025',
+              hintStyle: TextStyle(
+                color: Theme.of(context).primaryColorLight.withOpacity(0.5),
+              ),
+            ),
+            onChanged: (var value) {
+              if (value is int) {
+                isName = false;
+              } else {
+                isName = true;
+              }
+              my_value = value;
+            },
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text(
+                'Cancel',
+                style: TextStyle(
+                  color: Theme.of(context).primaryColorLight,
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                if (isName) {
+                  appstate.setName(my_value.toLowerCase());
+                } else {
+                  appstate.setId(int.parse(my_value));
+                }
+                Navigator.of(context).pop();
+              },
+              child: Text(
+                'OK',
+                style: TextStyle(
+                  color: Theme.of(context).primaryColorLight,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     var appstate = context.watch<PokeAppState>();
     int id = appstate.id;
+    String name = appstate.name;
+    bool isName = appstate.isName;
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColorLight,
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColor,
         bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(4.0),
+          preferredSize: const Size.fromHeight(3.0),
           child: RotationTransition(
             turns: Tween(begin: 0.0, end: 1.0).animate(_controller),
             child: IconButton(
+              splashColor: Colors.transparent,
+              highlightColor: Colors.transparent,
               icon: Image.asset(
                 'assets/images/Pokeball.png',
                 height: MediaQuery.of(context).size.height / 20,
@@ -127,58 +232,14 @@ class _PokemonMainState extends State<PokemonMain> with SingleTickerProviderStat
               ),
               onPressed: () {
                 _controller.forward(from: 0.0);
+                showPokemonPopUp(context);
               },
-              ),
+            ),
           ),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            SizedBox(height: 20),
-            TextField(
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Enter Pokemon ID',
-              ),
-              onSubmitted: (String value) {
-                appstate.setId(int.parse(value));
-              },
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      if (id > 1) {
-                        appstate.decrement();
-                      } else {
-                        appstate.setId(1025);
-                      }
-                    });
-                  },
-                  child: const Text('<'),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      if (id < 1025) {
-                       appstate.increment();
-                      } else {
-                        appstate.setId(1);
-                      }
-                    });
-                  },
-                  child: const Text('>'),
-                ),
-              ],
-            ),
-            setupPokemon(id),
-          ],
-        ),
-      ),
+      body: 
+      setupPokemon(id, name, isName),
     );
   }
 }
@@ -200,10 +261,13 @@ class PokeImage extends StatelessWidget {
             children: <Widget>[
               Center(
                 child: SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.5,
-                  width: MediaQuery.of(context).size.width * 0.5,
-                  child: image,
-                ),
+                    height: MediaQuery.of(context).size.height * 0.5,
+                    width: MediaQuery.of(context).size.width * 0.5,
+                    child: Image(
+                      image: image.image,
+                      height: MediaQuery.of(context).size.height * 0.5,
+                      width: MediaQuery.of(context).size.width * 0.5,
+                    )),
               ),
               Center(
                 child: Image(
@@ -247,7 +311,25 @@ class DexType extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text('PokeDex: ' + getDexType(id));
+    return Container(
+      decoration: BoxDecoration(
+        color: Theme.of(context).primaryColor,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(5.0),
+        child: Text(
+          getDexType(id),
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Theme.of(context).primaryColorLight,
+          ),
+        ),
+      ),
+
+    
+      );
   }
 }
 
@@ -257,3 +339,51 @@ class PokeList extends StatelessWidget {
     return Text('poop');
   }
 }
+
+
+// Padding(
+//         padding: const EdgeInsets.all(8.0),
+//         child: Column(
+//           children: [
+//             SizedBox(height: 20),
+//             TextField(
+//               decoration: InputDecoration(
+//                 border: OutlineInputBorder(),
+//                 labelText: 'Enter Pokemon ID',
+//               ),
+//               onSubmitted: (String value) {
+//                 appstate.setId(int.parse(value));
+//               },
+//             ),
+//             Row(
+//               mainAxisAlignment: MainAxisAlignment.center,
+//               children: [
+//                 ElevatedButton(
+//                   onPressed: () {
+//                     setState(() {
+//                       if (id > 1) {
+//                         appstate.decrement();
+//                       } else {
+//                         appstate.setId(1025);
+//                       }
+//                     });
+//                   },
+//                   child: const Text('<'),
+//                 ),
+//                 ElevatedButton(
+//                   onPressed: () {
+//                     setState(() {
+//                       if (id < 1025) {
+//                         appstate.increment();
+//                       } else {
+//                         appstate.setId(1);
+//                       }
+//                     });
+//                   },
+//                   child: const Text('>'),
+//                 ),
+//               ],
+//             ),
+//           ],
+//         ),
+//       ),
