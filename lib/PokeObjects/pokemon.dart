@@ -1,7 +1,4 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:pokedex/PokeObjects/region.dart';
 
 class Pokemon {
   final String name;

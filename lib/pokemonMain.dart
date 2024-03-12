@@ -6,30 +6,41 @@ import 'package:pokedex/Utilities/read_txt_file.dart';
 import 'package:pokedex/api.dart';
 import 'package:pokedex/Utilities/string_extension.dart';
 import 'package:provider/provider.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 
 class PokeAppState extends ChangeNotifier {
   int id = 1;
   String name = "bulbasaur";
   bool isName = false;
+  bool updated = false;
   void increment() {
     id++;
+    setUpdated(true);
     notifyListeners();
   }
 
   void decrement() {
     id--;
+    setUpdated(true);
     notifyListeners();
   }
 
   void setId(int newId) {
     id = newId;
+    setUpdated(true);
     notifyListeners();
   }
 
   void setName(String newName) {
     name = newName;
     isName = true;
+    setUpdated(true);
+    notifyListeners();
+  }
+
+  void setUpdated(bool newUpdated) {
+    updated = newUpdated;
     notifyListeners();
   }
 }
@@ -44,7 +55,7 @@ Future<Pokemon> fetchPokemonName(String name) async {
   return Pokemon.fromJson(jsonDecode(response));
 }
 
-FutureBuilder<Pokemon> setupPokemon(int id, String name, bool isName) {
+FutureBuilder<Pokemon> setupPokemon(int id, String name, bool isName, List<String> pokeList) {
   return FutureBuilder<Pokemon>(
     future: isName ? fetchPokemonName(name) : fetchPokemon(id),
     builder: (context, snapshot) {
@@ -60,7 +71,7 @@ FutureBuilder<Pokemon> setupPokemon(int id, String name, bool isName) {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  DexType(id),
+                  DexType(snapshot.data!.id),
                   SizedBox(width: 110),
                   Text(
                     'No. ' + snapshot.data!.id.toString(),
@@ -91,7 +102,8 @@ FutureBuilder<Pokemon> setupPokemon(int id, String name, bool isName) {
                   ),
                 ),
               ),
-              //PokeList(),
+             SizedBox(height: 50),
+             PokeList(snapshot.data!.id, pokeList),
             ],
           ),
         );
@@ -118,7 +130,9 @@ class _PokemonMainState extends State<PokemonMain>
 
   void pokelist() async {
     String data = await loadAsset('assets/raw/poke_list.txt');
-    pokeList = data.split('\n');
+    setState(() {
+      pokeList = data.split('\n');
+    });
   }
 
   @override
@@ -139,7 +153,7 @@ class _PokemonMainState extends State<PokemonMain>
   }
   void showPokemonPopUp(BuildContext context) {
     var appstate = context.read<PokeAppState>();
-    var my_value;
+    var myValue;
     bool isName = false;
     showDialog(
       context: context,
@@ -201,7 +215,7 @@ class _PokemonMainState extends State<PokemonMain>
               } else {
                 isName = true;
               }              
-              my_value = selection;
+              myValue = selection;
             },
           ),
           actions: <Widget>[
@@ -219,9 +233,9 @@ class _PokemonMainState extends State<PokemonMain>
             TextButton(
               onPressed: () {
                 if (isName) {
-                  appstate.setName(my_value.toLowerCase());
+                  appstate.setName(myValue.toLowerCase());
                 } else {
-                  appstate.setId(int.parse(my_value));
+                  appstate.setId(int.parse(myValue));
                 }
                 Navigator.of(context).pop();
               },
@@ -268,8 +282,8 @@ class _PokemonMainState extends State<PokemonMain>
           ),
         ),
       ),
-      body: 
-      setupPokemon(id, name, isName),
+      body:       
+      setupPokemon(id, name, isName, pokeList),
     );
   }
 }
@@ -363,57 +377,71 @@ class DexType extends StatelessWidget {
   }
 }
 
-class PokeList extends StatelessWidget {
+class PokeList extends StatefulWidget {
+  final int id;
+  final List<String> pokeList;
+  const PokeList(this.id, this.pokeList, {super.key});
+
   @override
-  Widget build(BuildContext context) {
-    return Text('poop');
-  }
+  State<PokeList> createState() => _PokeListState();
 }
 
+class _PokeListState extends State<PokeList> {
 
-// Padding(
-//         padding: const EdgeInsets.all(8.0),
-//         child: Column(
-//           children: [
-//             SizedBox(height: 20),
-//             TextField(
-//               decoration: InputDecoration(
-//                 border: OutlineInputBorder(),
-//                 labelText: 'Enter Pokemon ID',
-//               ),
-//               onSubmitted: (String value) {
-//                 appstate.setId(int.parse(value));
-//               },
-//             ),
-//             Row(
-//               mainAxisAlignment: MainAxisAlignment.center,
-//               children: [
-//                 ElevatedButton(
-//                   onPressed: () {
-//                     setState(() {
-//                       if (id > 1) {
-//                         appstate.decrement();
-//                       } else {
-//                         appstate.setId(1025);
-//                       }
-//                     });
-//                   },
-//                   child: const Text('<'),
-//                 ),
-//                 ElevatedButton(
-//                   onPressed: () {
-//                     setState(() {
-//                       if (id < 1025) {
-//                         appstate.increment();
-//                       } else {
-//                         appstate.setId(1);
-//                       }
-//                     });
-//                   },
-//                   child: const Text('>'),
-//                 ),
-//               ],
-//             ),
-//           ],
-//         ),
-//       ),
+
+  @override
+  Widget build(BuildContext context) {
+    var appstate = context.read<PokeAppState>();
+    int appID = appstate.id;
+    bool updated = appstate.updated;
+    ItemScrollController _scrollController = ItemScrollController();
+
+    if (updated) {
+      setState(() {
+        _scrollController.scrollTo(
+          index: appID - 1,
+          duration: Duration(seconds: 1),
+        );
+      });
+      appstate.setUpdated(false);
+    }
+    return Card(
+      color: Theme.of(context).secondaryHeaderColor,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+      child: Container(
+        padding: const EdgeInsets.all(10),
+        width: MediaQuery.of(context).size.width / 1.5,
+        height: MediaQuery.of(context).size.height / 5,
+        child: ScrollablePositionedList.builder(
+          itemScrollController: _scrollController,
+          itemCount: widget.pokeList.length,
+          itemBuilder: (BuildContext context, int index) {
+            return Card(
+              color: widget.pokeList[index] == widget.pokeList[widget.id - 1] ? Theme.of(context).primaryColor : Theme.of(context).secondaryHeaderColor,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              child: ListTile(             
+                title: Text(
+                  widget.pokeList[index],
+                  style: TextStyle(
+                    color: widget.pokeList[index] == widget.pokeList[widget.id - 1] ? Theme.of(context).primaryColorLight : Theme.of(context).primaryColor,
+                  ),
+                ),
+                onTap: () {
+                  appstate.setName(widget.pokeList[index].toLowerCase());
+                  _scrollController.scrollTo(
+                    index: index,
+                    duration: Duration(seconds: 1),
+                  );
+                },
+              ),
+            );
+          },
+        ),
+        ),
+    );
+  }
+}
