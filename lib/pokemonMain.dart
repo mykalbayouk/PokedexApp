@@ -1,13 +1,12 @@
 import 'dart:convert';
-import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:pokedex/PokeObjects/pokemon.dart';
+import 'package:pokedex/Utilities/read_txt_file.dart';
 import 'package:pokedex/api.dart';
 import 'package:pokedex/Utilities/string_extension.dart';
 import 'package:provider/provider.dart';
+
 
 class PokeAppState extends ChangeNotifier {
   int id = 1;
@@ -115,14 +114,12 @@ class _PokemonMainState extends State<PokemonMain>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
 
-  List<String> pokelist (){
-    var file = File('assets/raw/poke_list.txt');
-    for (var line in file.readAsLinesSync()) {
-      print(line);
-    }
-    return file.readAsLinesSync();
-  }
+  List<String> pokeList = [];
 
+  void pokelist() async {
+    String data = await loadAsset('assets/raw/poke_list.txt');
+    pokeList = data.split('\n');
+  }
 
   @override
   void initState() {
@@ -131,6 +128,7 @@ class _PokemonMainState extends State<PokemonMain>
       vsync: this,
       duration: const Duration(seconds: 1),
     );
+    pokelist();
     super.initState();
   }
 
@@ -140,9 +138,8 @@ class _PokemonMainState extends State<PokemonMain>
     super.dispose();
   }
   void showPokemonPopUp(BuildContext context) {
-    pokelist();
     var appstate = context.read<PokeAppState>();
-    var my_value = '';
+    var my_value;
     bool isName = false;
     showDialog(
       context: context,
@@ -155,23 +152,56 @@ class _PokemonMainState extends State<PokemonMain>
               color: Theme.of(context).primaryColorLight,
             ),
           ),
-          content: TextField(
-            style: TextStyle(
-              color: Theme.of(context).primaryColorLight,
-            ),
-            decoration: InputDecoration(
-              hintText: 'ID: 1-1025',
-              hintStyle: TextStyle(
-                color: Theme.of(context).primaryColorLight.withOpacity(0.5),
-              ),
-            ),
-            onChanged: (var value) {
-              if (value is int) {
+          content: Autocomplete<String>(
+            optionsViewBuilder: (context, onSelected, options) {
+              return Align(
+                alignment: Alignment.topLeft,
+                child: Material(
+                  color: Theme.of(context).secondaryHeaderColor,
+                  child: SizedBox(
+                    height: options.length * 100.0,
+                    width: MediaQuery.of(context).size.width * .68,
+                    child: ListView.builder(
+                      itemCount: options.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return ListTile(
+                          title: Text(
+                            options.elementAt(index),
+                            style: TextStyle(
+                              color: Theme.of(context).primaryColor,
+                            ),
+                          ),
+                          onTap: () {
+                            onSelected(options.elementAt(index));
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              );
+            },
+            optionsBuilder: (TextEditingValue textEditingValue) {              
+              if (textEditingValue.text == '' ) {
+                return const Iterable<String>.empty();
+              } else if (int.tryParse(textEditingValue.text) != null) {
+                if (int.parse(textEditingValue.text) > 1025 || int.parse(textEditingValue.text) < 1) {
+                  return const Iterable<String>.empty();
+                } else {
+                  return Iterable.generate(1, (index) => textEditingValue.text);
+                }
+              }
+              return pokeList.where((String option) {                
+                return option.contains(textEditingValue.text.capitalize());
+              });     
+            },
+            onSelected: (var selection) {
+              if (selection is int) {
                 isName = false;
               } else {
                 isName = true;
-              }
-              my_value = value;
+              }              
+              my_value = selection;
             },
           ),
           actions: <Widget>[

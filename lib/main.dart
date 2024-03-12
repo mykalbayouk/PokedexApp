@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:pokedex/pokemonMain.dart';
-import 'package:pokedex/api.dart';
 import 'package:provider/provider.dart';
 
 
 void main() {
   runApp(const MainApp());
 }
-
 
 class MainApp extends StatelessWidget {
   const MainApp({super.key});
