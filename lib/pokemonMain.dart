@@ -14,28 +14,17 @@ class PokeAppState extends ChangeNotifier {
   String name = "bulbasaur";
   bool isName = false;
   bool updated = false;
-  void increment() {
-    id++;
-    setUpdated(true);
-    notifyListeners();
-  }
-
-  void decrement() {
-    id--;
-    setUpdated(true);
-    notifyListeners();
-  }
 
   void setId(int newId) {
     id = newId;
-    setUpdated(true);
+    updated = true;
     notifyListeners();
   }
 
   void setName(String newName) {
     name = newName;
     isName = true;
-    setUpdated(true);
+    updated = true;
     notifyListeners();
   }
 
@@ -43,6 +32,7 @@ class PokeAppState extends ChangeNotifier {
     updated = newUpdated;
     notifyListeners();
   }
+
 }
 
 Future<Pokemon> fetchPokemon(int id) async {
@@ -387,24 +377,28 @@ class PokeList extends StatefulWidget {
 }
 
 class _PokeListState extends State<PokeList> {
-
-
   @override
   Widget build(BuildContext context) {
     var appstate = context.read<PokeAppState>();
     int appID = appstate.id;
     bool updated = appstate.updated;
     ItemScrollController _scrollController = ItemScrollController();
+    ItemPositionsListener _itemPositionsListener = ItemPositionsListener.create();
 
-    if (updated) {
-      setState(() {
+    _itemPositionsListener.itemPositions.addListener(() {   
+      // appID is not updating and widgetID is delayed in selection  
+      if ((_itemPositionsListener.itemPositions.value.first.index + 1 != appID || _itemPositionsListener.itemPositions.value.first.index - 1 != appID || _itemPositionsListener.itemPositions.value.first.index != appID) && updated) {        
+        print("APPID" + appID.toString());
+        print(widget.id-1);
         _scrollController.scrollTo(
           index: appID - 1,
           duration: Duration(seconds: 1),
+          curve: Curves.easeInOut,
         );
-      });
-      appstate.setUpdated(false);
-    }
+        appstate.setUpdated(false);
+
+      }
+    });
     return Card(
       color: Theme.of(context).secondaryHeaderColor,
       shape: RoundedRectangleBorder(
@@ -412,10 +406,11 @@ class _PokeListState extends State<PokeList> {
       ),
       child: Container(
         padding: const EdgeInsets.all(10),
-        width: MediaQuery.of(context).size.width / 1.5,
-        height: MediaQuery.of(context).size.height / 5,
+        width: MediaQuery.of(context).size.width / 1.25,
+        height: MediaQuery.of(context).size.height / 4,
         child: ScrollablePositionedList.builder(
           itemScrollController: _scrollController,
+          itemPositionsListener: _itemPositionsListener,
           itemCount: widget.pokeList.length,
           itemBuilder: (BuildContext context, int index) {
             return Card(
@@ -435,6 +430,7 @@ class _PokeListState extends State<PokeList> {
                   _scrollController.scrollTo(
                     index: index,
                     duration: Duration(seconds: 1),
+                    curve: Curves.easeInOut,
                   );
                 },
               ),
