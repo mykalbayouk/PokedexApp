@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:pokedex/PokeObjects/pokemon.dart';
 import 'package:pokedex/Utilities/read_txt_file.dart';
-import 'package:pokedex/api.dart';
+import 'package:pokedex/Utilities/api.dart';
 import 'package:pokedex/Utilities/string_extension.dart';
 import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
