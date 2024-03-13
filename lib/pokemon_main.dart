@@ -161,11 +161,17 @@ class _PokemonMainState extends State<PokemonMain>
               return Align(
                 alignment: Alignment.topLeft,
                 child: Material(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  elevation: 4.0,
                   color: Theme.of(context).secondaryHeaderColor,
-                  child: SizedBox(
-                    height: options.length * 100.0,
+                  child: SizedBox(                  
+                    height: options.length * 70.0,
                     width: MediaQuery.of(context).size.width * .68,
-                    child: ListView.builder(
+                    child: ListView.separated(
+                      padding: EdgeInsets.all(5),
+                      shrinkWrap: false,
                       itemCount: options.length,
                       itemBuilder: (BuildContext context, int index) {
                         return ListTile(
@@ -180,6 +186,14 @@ class _PokemonMainState extends State<PokemonMain>
                           },
                         );
                       },
+                      separatorBuilder: (BuildContext context, int index) {
+                        return Divider(
+                          indent: 10,
+                          endIndent: 10,
+                          color: Theme.of(context).primaryColor,
+                        );
+                      },
+                    
                     ),
                   ),
                 ),
@@ -249,6 +263,7 @@ class _PokemonMainState extends State<PokemonMain>
     String name = appstate.name;
     bool isName = appstate.isName;
     return Scaffold(
+      resizeToAvoidBottomInset: false, 
       backgroundColor: Theme.of(context).primaryColorLight,
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColor,
@@ -380,23 +395,15 @@ class _PokeListState extends State<PokeList> {
   @override
   Widget build(BuildContext context) {
     var appstate = context.read<PokeAppState>();
-    int appID = appstate.id;
     bool updated = appstate.updated;
-    ItemScrollController _scrollController = ItemScrollController();
-    ItemPositionsListener _itemPositionsListener = ItemPositionsListener.create();
+    ItemScrollController scrollController = ItemScrollController();
+    ItemPositionsListener itemPositionsListener = ItemPositionsListener.create();
 
-    _itemPositionsListener.itemPositions.addListener(() {   
+    itemPositionsListener.itemPositions.addListener(() {   
       // appID is not updating and widgetID is delayed in selection  
-      if ((_itemPositionsListener.itemPositions.value.first.index + 1 != appID || _itemPositionsListener.itemPositions.value.first.index - 1 != appID || _itemPositionsListener.itemPositions.value.first.index != appID) && updated) {        
-        print("APPID" + appID.toString());
-        print(widget.id-1);
-        _scrollController.scrollTo(
-          index: appID - 1,
-          duration: Duration(seconds: 1),
-          curve: Curves.easeInOut,
-        );
-        appstate.setUpdated(false);
-
+      if (itemPositionsListener.itemPositions.value.first.index + 1 != widget.id && itemPositionsListener.itemPositions.value.first.index - 1 != widget.id && itemPositionsListener.itemPositions.value.first.index != widget.id && updated) {        
+        // scrollController.jumpTo(index: widget.id - 1);
+        
       }
     });
     return Card(
@@ -409,8 +416,8 @@ class _PokeListState extends State<PokeList> {
         width: MediaQuery.of(context).size.width / 1.25,
         height: MediaQuery.of(context).size.height / 4,
         child: ScrollablePositionedList.builder(
-          itemScrollController: _scrollController,
-          itemPositionsListener: _itemPositionsListener,
+          itemScrollController: scrollController,
+          itemPositionsListener: itemPositionsListener,
           itemCount: widget.pokeList.length,
           itemBuilder: (BuildContext context, int index) {
             return Card(
@@ -418,7 +425,17 @@ class _PokeListState extends State<PokeList> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10.0),
               ),
-              child: ListTile(             
+              child: ListTile(  
+                leading: Icon(
+                  Icons.circle,
+                  color: widget.pokeList[index] == widget.pokeList[widget.id - 1] ? Theme.of(context).primaryColorLight : Theme.of(context).primaryColor,
+                ),
+                trailing: Text(
+                  "No. " + (index + 1).toString(),
+                  style: TextStyle(
+                    color: widget.pokeList[index] == widget.pokeList[widget.id - 1] ? Theme.of(context).primaryColorLight : Theme.of(context).primaryColor,
+                  ),
+                ),
                 title: Text(
                   widget.pokeList[index],
                   style: TextStyle(
@@ -427,7 +444,7 @@ class _PokeListState extends State<PokeList> {
                 ),
                 onTap: () {
                   appstate.setName(widget.pokeList[index].toLowerCase());
-                  _scrollController.scrollTo(
+                  scrollController.scrollTo(
                     index: index,
                     duration: Duration(seconds: 1),
                     curve: Curves.easeInOut,
