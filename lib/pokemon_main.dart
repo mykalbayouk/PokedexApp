@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:pokedex/PokeObjects/pokemon.dart';
@@ -28,7 +29,7 @@ class PokeAppState extends ChangeNotifier {
   void setUpdated(bool newUpdated) {
     updated = newUpdated;
     notifyListeners();
-  }
+  }  
 }
 
 Future<Pokemon> fetchPokemon(int id) async {
@@ -62,9 +63,9 @@ FutureBuilder<Pokemon> setupPokemon(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   DexType(snapshot.data!.id),
-                  SizedBox(width: 110),
+                  const SizedBox(width: 110),
                   Text(
-                    'No. ' + snapshot.data!.id.toString(),
+                    'No. ${snapshot.data!.id}',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -92,8 +93,8 @@ FutureBuilder<Pokemon> setupPokemon(
                   ),
                 ),
               ),
-              SizedBox(height: 50),
-              PokeList(snapshot.data!.id, pokeList),
+              const SizedBox(height: 50),
+              PokeList(pokeList),
             ],
           ),
         );
@@ -336,6 +337,7 @@ class PokeImage extends StatelessWidget {
 }
 
 class DexType extends StatelessWidget {
+
   final int id;
   const DexType(this.id, {super.key});
 
@@ -381,34 +383,31 @@ class DexType extends StatelessWidget {
   }
 }
 
-class PokeList extends StatefulWidget {
-  final int id;
+class PokeList extends StatelessWidget {
+  static int test = 0;
   final List<String> pokeList;
-  const PokeList(this.id, this.pokeList, {super.key});
-
-  @override
-  State<PokeList> createState() => _PokeListState();
-}
-
-class _PokeListState extends State<PokeList> {
-  ItemScrollController scrollController = ItemScrollController();
-  ItemPositionsListener itemPositionsListener = ItemPositionsListener.create();
+  
+  const PokeList(this.pokeList, {super.key});
 
   @override
   Widget build(BuildContext context) {
+    test++;
+    ItemScrollController scrollController = ItemScrollController();
+    ItemPositionsListener itemPositionsListener = ItemPositionsListener.create();
     var appstate = context.read<PokeAppState>();
-    bool updated = appstate.updated;
+    int id = appstate.id;
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (updated) {
-        setState(() {
-          appstate.setUpdated(false);
-        });
-        print("Appstate: ${appstate.id - 1}");
-        print("Index: ${widget.id - 1}");
-        scrollController.jumpTo(index: widget.id - 1);
-      }
-    });
+    // worlds most jank solution to a problem
+    if(test % 2 != 0 && appstate.updated == true){
+      Future.delayed(Duration.zero, () {
+        scrollController.scrollTo(
+                    index: id - 1,
+                    duration: const Duration(seconds: 1),
+                    curve: Curves.easeInOut,
+                  );
+        appstate.setUpdated(false);
+      });
+    }
 
     return Card(
       color: Theme.of(context).secondaryHeaderColor,
@@ -422,10 +421,10 @@ class _PokeListState extends State<PokeList> {
         child: ScrollablePositionedList.builder(
           itemScrollController: scrollController,
           itemPositionsListener: itemPositionsListener,
-          itemCount: widget.pokeList.length,
+          itemCount: pokeList.length,
           itemBuilder: (BuildContext context, int index) {
             return Card(
-              color: widget.pokeList[index] == widget.pokeList[widget.id - 1]
+              color: pokeList[index] == pokeList[id - 1]
                   ? Theme.of(context).primaryColor
                   : Theme.of(context).secondaryHeaderColor,
               shape: RoundedRectangleBorder(
@@ -435,33 +434,33 @@ class _PokeListState extends State<PokeList> {
                 leading: Icon(
                   Icons.circle,
                   color:
-                      widget.pokeList[index] == widget.pokeList[widget.id - 1]
+                      pokeList[index] == pokeList[id - 1]
                           ? Theme.of(context).primaryColorLight
                           : Theme.of(context).primaryColor,
                 ),
                 trailing: Text(
-                  "No. " + (index + 1).toString(),
+                  "No. ${index + 1}",
                   style: TextStyle(
                     color:
-                        widget.pokeList[index] == widget.pokeList[widget.id - 1]
+                        pokeList[index] == pokeList[id - 1]
                             ? Theme.of(context).primaryColorLight
                             : Theme.of(context).primaryColor,
                   ),
                 ),
                 title: Text(
-                  widget.pokeList[index],
+                  pokeList[index],
                   style: TextStyle(
                     color:
-                        widget.pokeList[index] == widget.pokeList[widget.id - 1]
+                        pokeList[index] == pokeList[id - 1]
                             ? Theme.of(context).primaryColorLight
                             : Theme.of(context).primaryColor,
                   ),
                 ),
                 onTap: () {
-                  appstate.setName(widget.pokeList[index].toLowerCase());
+                  appstate.setName(pokeList[index].toLowerCase());
                   scrollController.scrollTo(
                     index: index,
-                    duration: Duration(seconds: 1),
+                    duration: const Duration(seconds: 1),
                     curve: Curves.easeInOut,
                   );
                 },
