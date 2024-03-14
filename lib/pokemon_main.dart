@@ -149,6 +149,12 @@ class _PokemonMainState extends State<PokemonMain>
     var appstate = context.read<PokeAppState>();
     var myValue;
     bool isName = false;
+
+    List<String> pokeListMine = [];
+    for(int i = 0; i < pokeList.length; i++){
+      pokeListMine.add(pokeList[i].split(',')[0]);
+    }
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -213,7 +219,7 @@ class _PokemonMainState extends State<PokemonMain>
                   return Iterable.generate(1, (index) => textEditingValue.text);
                 }
               }
-              return pokeList.where((String option) {
+              return pokeListMine.where((String option) {
                 return option.contains(textEditingValue.text.capitalize());
               });
             },
@@ -472,7 +478,7 @@ class PokeList extends StatelessWidget {
       }
     }
 
-    SizedBox typeIcon(String type) {
+    SizedBox typeIcon(String type, bool selected) {
       if (type == ''){
         return SizedBox();
       }
@@ -481,7 +487,7 @@ class PokeList extends StatelessWidget {
         child: ImageIcon(
           Svg('assets/images/type_short_icons/$type.svg'),
           size: 25,
-          color: chooseColor(type),         
+          color: !selected ? chooseColor(type) : Theme.of(context).primaryColorLight,         
         ),
       );
     }
@@ -512,8 +518,8 @@ class PokeList extends StatelessWidget {
                 leading: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    typeIcon(types[index * 3]),
-                    typeIcon(types[index * 3 + 1]),
+                    typeIcon(types[index * 3], pokeList[index] == pokeList[id - 1]),
+                    typeIcon(types[index * 3 + 1], pokeList[index] == pokeList[id - 1]),
                   ],
                 ),
                 trailing: Text(
