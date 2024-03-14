@@ -394,7 +394,7 @@ class DexType extends StatelessWidget {
     );
   }
 }
-
+// ignore: must_be_immutable
 class PokeList extends StatelessWidget {
   static int test = 0;
   final List<String> pokeListFull;
@@ -442,7 +442,7 @@ class PokeList extends StatelessWidget {
       } else if (type == 'Poison'){
         return Colors.purple;
       } else if (type == 'Fire'){
-        return Colors.red;
+        return Colors.orange;
       } else if (type == 'Water'){
         return Colors.blue;
       } else if (type == 'Bug'){
@@ -450,7 +450,7 @@ class PokeList extends StatelessWidget {
       } else if (type == 'Normal'){
         return Colors.grey;
       } else if (type == 'Electric'){
-        return Colors.yellow;
+        return Colors.yellowAccent.shade700;
       } else if (type == 'Ground'){
         return Colors.brown;
       } else if (type == 'Fairy'){

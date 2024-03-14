@@ -26,10 +26,10 @@ Pikachu,Electric,
 Raichu,Electric,
 Sandshrew,Ground,
 Sandslash,Ground,
-Nidoran♀,Poison,
+Nidoran-m,Poison,
 Nidorina,Poison,
 Nidoqueen,Poison,Ground
-Nidoran♂,Poison,
+Nidoran-f,Poison,
 Nidorino,Poison,
 Nidoking,Poison,Ground
 Clefairy,Fairy,
@@ -119,7 +119,7 @@ Goldeen,Water,
 Seaking,Water,
 Staryu,Water,
 Starmie,Water,Psychic
-Mr. Mime,Psychic,Fairy
+Mr-Mime,Psychic,Fairy
 Scyther,Bug,Flying
 Jynx,Ice,Psychic
 Electabuzz,Electric,
@@ -436,7 +436,7 @@ Skuntank,Poison,Dark
 Bronzor,Steel,Psychic
 Bronzong,Steel,Psychic
 Bonsly,Rock,
-Mime Jr.,Psychic,Fairy
+Mime-Jr,Psychic,Fairy
 Happiny,Normal,
 Chatot,Normal,Flying
 Spiritomb,Ghost,Dark
@@ -862,8 +862,8 @@ Grimmsnarl,Dark,Fairy
 Obstagoon,Dark,Normal
 Perrserker,Steel,
 Cursola,Ghost,
-Sirfetch'd,Fighting,
-Mr. Rime,Ice,Psychic
+Sirfetchd,Fighting,
+Mr-Rime,Ice,Psychic
 Runerigus,Ground,Ghost
 Milcery,Fairy,
 Alcremie,Fairy,
@@ -981,18 +981,18 @@ Clodsire,Poison,Ground
 Farigiraf,Normal,Psychic
 Dudunsparce,Normal,
 Kingambit,Dark,Steel
-Great Tusk,Ground,Fighting
-Scream Tail,Fairy,Psychic
-Brute Bonnet,Grass,Dark
-Flutter Mane,Ghost,Fairy
-Slither Wing,Bug,Fighting
-Sandy Shocks,Electric,Ground
-Iron Treads,Ground,Steel
-Iron Bundle,Ice,Water
-Iron Hands,Fighting,Electric
-Iron Jugulis,Dark,Flying
-Iron Moth,Fire,Poison
-Iron Thorns,Rock,Electric
+Great-Tusk,Ground,Fighting
+Scream-Tail,Fairy,Psychic
+Brute-Bonnet,Grass,Dark
+Flutter-Mane,Ghost,Fairy
+Slither-Wing,Bug,Fighting
+Sandy-Shocks,Electric,Ground
+Iron-Treads,Ground,Steel
+Iron-Bundle,Ice,Water
+Iron-Hands,Fighting,Electric
+Iron-Jugulis,Dark,Flying
+Iron-Moth,Fire,Poison
+Iron-Thorns,Rock,Electric
 Frigibax,Dragon,Ice
 Arctibax,Dragon,Ice
 Baxcalibur,Dragon,Ice
@@ -1002,12 +1002,12 @@ Wo-Chien,Dark,Grass
 Chien-Pao,Dark,Ice
 Ting-Lu,Dark,Ground
 Chi-Yu,Dark,Fire
-Roaring Moon,Dragon,Dark
-Iron Valiant,Fairy,Fighting
+Roaring-Moon,Dragon,Dark
+Iron-Valiant,Fairy,Fighting
 Koraidon,Fighting,Dragon
 Miraidon,Electric,Dragon
-Walking Wake,Water,Dragon
-Iron Leaves,Grass,Psychic
+Walking-Wake,Water,Dragon
+Iron-Leaves,Grass,Psychic
 Dipplin,Grass,Dragon
 Poltchageist,Grass,Ghost
 Sinistcha,Grass,Ghost
@@ -1017,9 +1017,9 @@ Fezandipiti,Poison,Fairy
 Ogerpon,Grass,
 Archaludon,Steel,Dragon
 Hydrapple,Grass,Dragon
-Gouging Fire,Fire,Dragon
-Raging Bolt,Electric,Dragon
-Iron Boulder,Rock,Psychic
-Iron Crown,Steel,Psychic
+Gouging-Fire,Fire,Dragon
+Raging-Bolt,Electric,Dragon
+Iron-Boulder,Rock,Psychic
+Iron-Crown,Steel,Psychic
 Terapagos,Normal,
 Pecharunt,Poison,Ghost
