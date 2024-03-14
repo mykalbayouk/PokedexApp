@@ -356,8 +356,12 @@ class DexType extends StatelessWidget {
       return 'Kalos';
     } else if (id < 810) {
       return 'Alola';
-    } else {
+    } else if (id < 898){
       return 'Galar';
+    } else if (id < 905) {
+      return 'Hisui';
+    } else {
+      return 'Paldea';
     }
   }
 
