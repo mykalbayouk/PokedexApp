@@ -1,13 +1,15 @@
 import 'dart:convert';
-import 'dart:developer';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:pokedex/PokeObjects/pokemon.dart';
 import 'package:pokedex/Utilities/read_txt_file.dart';
 import 'package:pokedex/Utilities/api.dart';
 import 'package:pokedex/Utilities/string_extension.dart';
 import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 
 class PokeAppState extends ChangeNotifier {
   int id = 1;
@@ -389,9 +391,22 @@ class DexType extends StatelessWidget {
 
 class PokeList extends StatelessWidget {
   static int test = 0;
-  final List<String> pokeList;
+  final List<String> pokeListFull;
   
-  const PokeList(this.pokeList, {super.key});
+  PokeList(this.pokeListFull, {super.key});
+
+  List<String> types = [];
+
+  List<String> parsePL(){
+    List<String> pokeList = [];
+    for (int i = 0; i < pokeListFull.length; i++){
+      pokeList.add(pokeListFull[i].split(',')[0]);
+      types.add(pokeListFull[i].split(',')[1]);
+      types.add(pokeListFull[i].split(',')[2]);
+      types.add('-');
+    }
+    return pokeList;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -400,6 +415,8 @@ class PokeList extends StatelessWidget {
     ItemPositionsListener itemPositionsListener = ItemPositionsListener.create();
     var appstate = context.read<PokeAppState>();
     int id = appstate.id;
+
+    List<String> pokeList = parsePL();
 
     // worlds most jank solution to a problem
     if(test % 2 != 0 && appstate.updated == true){
@@ -412,6 +429,63 @@ class PokeList extends StatelessWidget {
         appstate.setUpdated(false);
       });
     }
+
+    Color chooseColor(String type){
+      if (type == 'Grass'){
+        return Colors.green;
+      } else if (type == 'Poison'){
+        return Colors.purple;
+      } else if (type == 'Fire'){
+        return Colors.red;
+      } else if (type == 'Water'){
+        return Colors.blue;
+      } else if (type == 'Bug'){
+        return Colors.green;
+      } else if (type == 'Normal'){
+        return Colors.grey;
+      } else if (type == 'Electric'){
+        return Colors.yellow;
+      } else if (type == 'Ground'){
+        return Colors.brown;
+      } else if (type == 'Fairy'){
+        return Colors.pink;
+      } else if (type == 'Fighting'){
+        return Colors.red;
+      } else if (type == 'Psychic'){
+        return Colors.purple;
+      } else if (type == 'Rock'){
+        return Colors.brown;
+      } else if (type == 'Steel'){
+        return Colors.grey;
+      } else if (type == 'Ice'){
+        return Colors.blue;
+      } else if (type == 'Ghost'){
+        return Colors.purple;
+      } else if (type == 'Dragon'){
+        return Colors.blue;
+      } else if (type == 'Flying'){
+        return Colors.blue;
+      } else if (type == 'Dark'){
+        return Colors.black;
+      } else {
+        return Colors.grey;
+      }
+    }
+
+    SizedBox typeIcon(String type) {
+      if (type == ''){
+        return SizedBox();
+      }
+      
+      return SizedBox(
+        child: ImageIcon(
+          Svg('assets/images/type_short_icons/$type.svg'),
+          size: 25,
+          color: chooseColor(type),         
+        ),
+      );
+    }
+
 
     return Card(
       color: Theme.of(context).secondaryHeaderColor,
@@ -435,12 +509,12 @@ class PokeList extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10.0),
               ),
               child: ListTile(
-                leading: Icon(
-                  Icons.circle,
-                  color:
-                      pokeList[index] == pokeList[id - 1]
-                          ? Theme.of(context).primaryColorLight
-                          : Theme.of(context).primaryColor,
+                leading: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    typeIcon(types[index * 3]),
+                    typeIcon(types[index * 3 + 1]),
+                  ],
                 ),
                 trailing: Text(
                   "No. ${index + 1}",
