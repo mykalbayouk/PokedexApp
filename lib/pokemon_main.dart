@@ -7,6 +7,7 @@ import 'package:pokedex/PokeObjects/pokemon.dart';
 import 'package:pokedex/Utilities/read_txt_file.dart';
 import 'package:pokedex/Utilities/api.dart';
 import 'package:pokedex/Utilities/string_extension.dart';
+import 'package:pokedex/pokemon_details.dart';
 import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
@@ -31,7 +32,7 @@ class PokeAppState extends ChangeNotifier {
   void setUpdated(bool newUpdated) {
     updated = newUpdated;
     notifyListeners();
-  }  
+  }
 }
 
 Future<Pokemon> fetchPokemon(int id) async {
@@ -77,12 +78,14 @@ FutureBuilder<Pokemon> setupPokemon(
                 ],
               ),
               PokeImage(snapshot.data!.image),
-              Card(
-                color: Theme.of(context).secondaryHeaderColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                elevation: 5,
+              ElevatedButton(
+                onPressed: () {                  
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => PokeDetails(snapshot: snapshot)),
+                  );
+                },
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
@@ -151,7 +154,7 @@ class _PokemonMainState extends State<PokemonMain>
     bool isName = false;
 
     List<String> pokeListMine = [];
-    for(int i = 0; i < pokeList.length; i++){
+    for (int i = 0; i < pokeList.length; i++) {
       pokeListMine.add(pokeList[i].split(',')[0]);
     }
 
@@ -345,7 +348,6 @@ class PokeImage extends StatelessWidget {
 }
 
 class DexType extends StatelessWidget {
-
   final int id;
   const DexType(this.id, {super.key});
 
@@ -364,7 +366,7 @@ class DexType extends StatelessWidget {
       return 'Kalos';
     } else if (id < 810) {
       return 'Alola';
-    } else if (id < 898){
+    } else if (id < 898) {
       return 'Galar';
     } else if (id < 905) {
       return 'Hisui';
@@ -394,18 +396,19 @@ class DexType extends StatelessWidget {
     );
   }
 }
+
 // ignore: must_be_immutable
 class PokeList extends StatelessWidget {
   static int test = 0;
   final List<String> pokeListFull;
-  
+
   PokeList(this.pokeListFull, {super.key});
 
   List<String> types = [];
 
-  List<String> parsePL(){
+  List<String> parsePL() {
     List<String> pokeList = [];
-    for (int i = 0; i < pokeListFull.length; i++){
+    for (int i = 0; i < pokeListFull.length; i++) {
       pokeList.add(pokeListFull[i].split(',')[0]);
       types.add(pokeListFull[i].split(',')[1]);
       types.add(pokeListFull[i].split(',')[2]);
@@ -418,60 +421,61 @@ class PokeList extends StatelessWidget {
   Widget build(BuildContext context) {
     test++;
     ItemScrollController scrollController = ItemScrollController();
-    ItemPositionsListener itemPositionsListener = ItemPositionsListener.create();
+    ItemPositionsListener itemPositionsListener =
+        ItemPositionsListener.create();
     var appstate = context.read<PokeAppState>();
     int id = appstate.id;
 
     List<String> pokeList = parsePL();
 
     // worlds most jank solution to a problem
-    if(test % 2 != 0 && appstate.updated == true){
+    if (test % 2 != 0 && appstate.updated == true) {
       Future.delayed(Duration.zero, () {
         scrollController.scrollTo(
-                    index: id - 1,
-                    duration: const Duration(seconds: 1),
-                    curve: Curves.easeInOut,
-                  );
+          index: id - 1,
+          duration: const Duration(seconds: 1),
+          curve: Curves.easeInOut,
+        );
         appstate.setUpdated(false);
       });
     }
 
-    Color chooseColor(String type){
-      if (type == 'Grass'){
+    Color chooseColor(String type) {
+      if (type == 'Grass') {
         return Colors.green;
-      } else if (type == 'Poison'){
+      } else if (type == 'Poison') {
         return Colors.purple;
-      } else if (type == 'Fire'){
+      } else if (type == 'Fire') {
         return Colors.orange;
-      } else if (type == 'Water'){
+      } else if (type == 'Water') {
         return Colors.blue;
-      } else if (type == 'Bug'){
+      } else if (type == 'Bug') {
         return Colors.green;
-      } else if (type == 'Normal'){
+      } else if (type == 'Normal') {
         return Colors.grey;
-      } else if (type == 'Electric'){
+      } else if (type == 'Electric') {
         return Colors.yellowAccent.shade700;
-      } else if (type == 'Ground'){
+      } else if (type == 'Ground') {
         return Colors.brown;
-      } else if (type == 'Fairy'){
+      } else if (type == 'Fairy') {
         return Colors.pink;
-      } else if (type == 'Fighting'){
+      } else if (type == 'Fighting') {
         return Colors.red;
-      } else if (type == 'Psychic'){
+      } else if (type == 'Psychic') {
         return Colors.purple;
-      } else if (type == 'Rock'){
+      } else if (type == 'Rock') {
         return Colors.brown;
-      } else if (type == 'Steel'){
+      } else if (type == 'Steel') {
         return Colors.grey;
-      } else if (type == 'Ice'){
+      } else if (type == 'Ice') {
         return Colors.blue;
-      } else if (type == 'Ghost'){
+      } else if (type == 'Ghost') {
         return Colors.purple;
-      } else if (type == 'Dragon'){
+      } else if (type == 'Dragon') {
         return Colors.blue;
-      } else if (type == 'Flying'){
+      } else if (type == 'Flying') {
         return Colors.blue;
-      } else if (type == 'Dark'){
+      } else if (type == 'Dark') {
         return Colors.black;
       } else {
         return Colors.grey;
@@ -479,19 +483,20 @@ class PokeList extends StatelessWidget {
     }
 
     SizedBox typeIcon(String type, bool selected) {
-      if (type == ''){
+      if (type == '') {
         return SizedBox();
       }
-      
+
       return SizedBox(
         child: ImageIcon(
           Svg('assets/images/type_short_icons/$type.svg'),
           size: 25,
-          color: !selected ? chooseColor(type) : Theme.of(context).primaryColorLight,         
+          color: !selected
+              ? chooseColor(type)
+              : Theme.of(context).primaryColorLight,
         ),
       );
     }
-
 
     return Card(
       color: Theme.of(context).secondaryHeaderColor,
@@ -518,26 +523,26 @@ class PokeList extends StatelessWidget {
                 leading: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    typeIcon(types[index * 3], pokeList[index] == pokeList[id - 1]),
-                    typeIcon(types[index * 3 + 1], pokeList[index] == pokeList[id - 1]),
+                    typeIcon(
+                        types[index * 3], pokeList[index] == pokeList[id - 1]),
+                    typeIcon(types[index * 3 + 1],
+                        pokeList[index] == pokeList[id - 1]),
                   ],
                 ),
                 trailing: Text(
                   "No. ${index + 1}",
                   style: TextStyle(
-                    color:
-                        pokeList[index] == pokeList[id - 1]
-                            ? Theme.of(context).primaryColorLight
-                            : Theme.of(context).primaryColor,
+                    color: pokeList[index] == pokeList[id - 1]
+                        ? Theme.of(context).primaryColorLight
+                        : Theme.of(context).primaryColor,
                   ),
                 ),
                 title: Text(
                   pokeList[index],
                   style: TextStyle(
-                    color:
-                        pokeList[index] == pokeList[id - 1]
-                            ? Theme.of(context).primaryColorLight
-                            : Theme.of(context).primaryColor,
+                    color: pokeList[index] == pokeList[id - 1]
+                        ? Theme.of(context).primaryColorLight
+                        : Theme.of(context).primaryColor,
                   ),
                 ),
                 onTap: () {
