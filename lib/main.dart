@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pokedex/pokemon_details.dart';
 import 'package:pokedex/pokemon_main.dart';
 import 'package:provider/provider.dart';
 
@@ -14,6 +15,7 @@ class MainApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => PokeAppState()),
+        ChangeNotifierProvider(create: (context) => DetailAppState()),
       ],
       builder: (context, child) { 
         return MaterialApp(

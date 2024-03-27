@@ -1,9 +1,8 @@
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:pokedex/PokeObjects/pokemon.dart';
+import 'package:pokedex/Utilities/pokeimage.dart';
 import 'package:pokedex/Utilities/read_txt_file.dart';
 import 'package:pokedex/Utilities/api.dart';
 import 'package:pokedex/Utilities/string_extension.dart';
@@ -77,7 +76,7 @@ FutureBuilder<Pokemon> setupPokemon(
                   ),
                 ],
               ),
-              PokeImage(snapshot.data!.image),
+              PokeImage(snapshot.data!.image, 1),
               ElevatedButton(
                 onPressed: () {                  
                   Navigator.push(
@@ -302,47 +301,6 @@ class _PokemonMainState extends State<PokemonMain>
         ),
       ),
       body: setupPokemon(id, name, isName, pokeList),
-    );
-  }
-}
-
-class PokeImage extends StatelessWidget {
-  final Image image;
-  const PokeImage(this.image, {super.key});
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Container(
-        height: MediaQuery.of(context).size.height / 3,
-        width: MediaQuery.of(context).size.width / 1.5,
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Stack(
-            children: <Widget>[
-              Center(
-                child: SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.5,
-                    width: MediaQuery.of(context).size.width * 0.5,
-                    child: Image(
-                      image: image.image,
-                      height: MediaQuery.of(context).size.height * 0.5,
-                      width: MediaQuery.of(context).size.width * 0.5,
-                    )),
-              ),
-              Center(
-                child: Image(
-                  image: AssetImage('assets/images/pokedexFrame.png'),
-                  height: MediaQuery.of(context).size.height,
-                  width: MediaQuery.of(context).size.width,
-                  color: Theme.of(context).primaryColor,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
     );
   }
 }
