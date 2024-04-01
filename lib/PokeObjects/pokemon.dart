@@ -9,6 +9,7 @@ class Pokemon {
   final Image sprite;
   final Image shinySprite;
   final List types;
+  final List abilities;
 
   Pokemon({
     required this.name,
@@ -19,6 +20,7 @@ class Pokemon {
     required this.sprite,
     required this.shinySprite,
     required this.types,
+    required this.abilities,
   });
 
   factory Pokemon.fromJson(Map<String, dynamic> json) {
@@ -31,6 +33,7 @@ class Pokemon {
       sprite: Image.network(json['sprites']['front_default']),
       shinySprite: Image.network(json['sprites']['front_shiny']),
       types: json['types'],
+      abilities: json['abilities'],
     );
   }
 }

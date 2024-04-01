@@ -15,9 +15,14 @@ urshifu-rapid-strike 892
 1020 - 1023 
 
 
-// create details page for each pokemon 
-// will pull api info from different links
-
+// TODO
+- [ ] modify abilities screen in details popup to show quick description abt each ability (may move to seperate location)
+- [ ] add types to details screen below Dex Type
+- [ ] add popup when you click dex
+- [ ] open new screen when click where to find (or popup)
+- [ ] add evolution chain to details screen
+- [ ] add moves to details screen
+- [ ] add favorite button to bottom of details screen
 
 
 

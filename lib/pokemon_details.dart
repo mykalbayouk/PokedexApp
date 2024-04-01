@@ -2,20 +2,20 @@
 
 import 'package:flutter/material.dart';
 import 'package:pokedex/PokeObjects/pokemon.dart';
-import 'package:pokedex/Utilities/custom_text.dart';
-import 'package:pokedex/Utilities/pokeimage.dart';
-import 'package:pokedex/Utilities/string_extension.dart';
+import 'package:pokedex/Utilities/Custom%20Widgets/abilities_list.dart';
+import 'package:pokedex/Utilities/Custom%20Widgets/custom_text.dart';
+import 'package:pokedex/Utilities/Functions/dex_type.dart';
+import 'package:pokedex/Utilities/Custom%20Widgets/pokeimage.dart';
+import 'package:pokedex/Utilities/Functions/string_extension.dart';
 import 'package:provider/provider.dart';
 
-class DetailAppState extends ChangeNotifier {
-  bool isPressed = false;
+bool isPressed = false;
 
+class DetailAppState extends ChangeNotifier {
   void changePressed() {
     isPressed = !isPressed;
     notifyListeners();
   }
-
-
 }
 
 class PokeDetails extends StatefulWidget {
@@ -28,7 +28,12 @@ class PokeDetails extends StatefulWidget {
 }
 
 class _PokeDetailsState extends State<PokeDetails> {
-  
+  @override
+  void initState() {
+    super.initState();
+    isPressed = false;
+  }
+
   void detailsPopUp(BuildContext context) {
     showDialog(
       context: context,
@@ -43,10 +48,11 @@ class _PokeDetailsState extends State<PokeDetails> {
             ),
             textAlign: TextAlign.center,
           ),
-          content: SizedBox(            
+          content: SizedBox(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                AbilitiesList(widget.snapshot.data!.abilities),
                 Text(
                   'Height: ${widget.snapshot.data!.height}',
                   style: TextStyle(
@@ -82,9 +88,10 @@ class _PokeDetailsState extends State<PokeDetails> {
   @override
   Widget build(BuildContext context) {
     var appState = context.read<DetailAppState>();
-    bool isPressed = appState.isPressed;
-    var sprite = isPressed ? widget.snapshot.data!.shinySprite : widget.snapshot.data!.sprite;
-    
+    var sprite = isPressed
+        ? widget.snapshot.data!.shinySprite
+        : widget.snapshot.data!.sprite;
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Theme.of(context).primaryColorLight,
@@ -105,7 +112,7 @@ class _PokeDetailsState extends State<PokeDetails> {
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Center(
-          child: Column(            
+          child: Column(
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -113,52 +120,67 @@ class _PokeDetailsState extends State<PokeDetails> {
                   Column(
                     children: [
                       ElevatedButton(
-                        
-                        style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all<Color>(Theme.of(context).primaryColorLight),
-                          elevation: MaterialStateProperty.all<double>(0),
-                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all<Color>(
+                                Theme.of(context).primaryColorLight),
+                            elevation: MaterialStateProperty.all<double>(0),
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
                               RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(0),
                               ),
                             ),
-                          splashFactory: NoSplash.splashFactory,
-                          animationDuration: Duration.zero,
-                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          enableFeedback: false,
-                          // i want to remove the color change when the button is pressed
-                        ),
-                        onPressed: () => {                          
-                          setState(() {
-                            appState.changePressed();
-                          })                         
-                        },
-                        child: PokeImage(sprite, 2.5)),
-                      IconButton(
-                        icon: Icon(
-                          Icons.more_horiz,
-                          size: 30,
-                          color: Theme.of(context).primaryColorDark,
+                            splashFactory: NoSplash.splashFactory,
+                            animationDuration: Duration.zero,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            enableFeedback: false,
+                            // i want to remove the color change when the button is pressed
                           ),
+                          onPressed: () => {
+                                setState(() {
+                                  appState.changePressed();
+                                })
+                              },
+                          child: PokeImage(sprite, 2.5)),
+                      IconButton(
+                          icon: Icon(
+                            Icons.more_horiz,
+                            size: 30,
+                            color: Theme.of(context).primaryColorDark,
+                          ),
+                          onPressed: () => {detailsPopUp(context)}),
+                    ],
+                  ),
+                  SizedBox(width: MediaQuery.of(context).size.width / 4),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CardText(
+                        'ID: ${widget.snapshot.data!.id}',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      TextButton(
                         onPressed: () => {
-                          detailsPopUp(context)
-                        }
+                          print("test"),
+                          },
+                        child: Text(
+                          getDexType(widget.snapshot.data!.id),
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                        ),
                       ),
                     ],
-                  ),                
-                  SizedBox(width: MediaQuery.of(context).size.width / 4),
-                  CardText(
-                    'ID: ${widget.snapshot.data!.id}',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).primaryColor,
-                    ),
-                    textAlign: TextAlign.center,
                   ),
                 ],
-              ),
-              Text('Types: ${widget.snapshot.data!.types[0]['type']['name']} ${widget.snapshot.data!.types.length > 1 ? 'and ${widget.snapshot.data!.types[1]['type']['name']}' : ''}'),
+              ),              
             ],
           ),
         ),

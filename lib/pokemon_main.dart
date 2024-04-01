@@ -2,10 +2,11 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:pokedex/PokeObjects/pokemon.dart';
-import 'package:pokedex/Utilities/pokeimage.dart';
-import 'package:pokedex/Utilities/read_txt_file.dart';
-import 'package:pokedex/Utilities/api.dart';
-import 'package:pokedex/Utilities/string_extension.dart';
+import 'package:pokedex/Utilities/Functions/dex_type.dart';
+import 'package:pokedex/Utilities/Custom%20Widgets/pokeimage.dart';
+import 'package:pokedex/Utilities/Functions/read_txt_file.dart';
+import 'package:pokedex/Utilities/Functions/api.dart';
+import 'package:pokedex/Utilities/Functions/string_extension.dart';
 import 'package:pokedex/pokemon_details.dart';
 import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
@@ -308,30 +309,6 @@ class _PokemonMainState extends State<PokemonMain>
 class DexType extends StatelessWidget {
   final int id;
   const DexType(this.id, {super.key});
-
-  String getDexType(int id) {
-    if (id < 152) {
-      return 'Kanto';
-    } else if (id < 252) {
-      return 'Johto';
-    } else if (id < 387) {
-      return 'Hoenn';
-    } else if (id < 494) {
-      return 'Sinnoh';
-    } else if (id < 650) {
-      return 'Unova';
-    } else if (id < 722) {
-      return 'Kalos';
-    } else if (id < 810) {
-      return 'Alola';
-    } else if (id < 898) {
-      return 'Galar';
-    } else if (id < 905) {
-      return 'Hisui';
-    } else {
-      return 'Paldea';
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
