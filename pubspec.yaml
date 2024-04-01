@@ -29,4 +29,5 @@ flutter:
   assets:
     - assets/images/
     - assets/images/type_short_icons/
+    - assets/images/type_long_icons/
     - assets/raw/
