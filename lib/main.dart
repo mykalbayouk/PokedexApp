@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:pokedex/pokemon_details.dart';
-import 'package:pokedex/pokemon_main.dart';
+import 'package:pokedex/layouts/pokemon_details.dart';
+import 'package:pokedex/layouts/pokemon_main.dart';
 import 'package:provider/provider.dart';
 
 

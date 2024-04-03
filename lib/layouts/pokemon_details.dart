@@ -1,11 +1,13 @@
 // ignore_for_file: must_be_immutable
 
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:pokedex/PokeObjects/pokemon.dart';
-import 'package:pokedex/Utilities/Custom%20Widgets/abilities_list.dart';
-import 'package:pokedex/Utilities/Custom%20Widgets/custom_text.dart';
+import 'package:pokedex/Utilities/CustomWidgets/abilities_list.dart';
+import 'package:pokedex/Utilities/CustomWidgets/custom_text.dart';
 import 'package:pokedex/Utilities/Functions/dex_type.dart';
-import 'package:pokedex/Utilities/Custom%20Widgets/pokeimage.dart';
+import 'package:pokedex/Utilities/CustomWidgets/pokeimage.dart';
 import 'package:pokedex/Utilities/Functions/string_extension.dart';
 import 'package:provider/provider.dart';
 
@@ -119,24 +121,8 @@ class _PokeDetailsState extends State<PokeDetails> {
                 children: [
                   Column(
                     children: [
-                      ElevatedButton(
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                                Theme.of(context).primaryColorLight),
-                            elevation: MaterialStateProperty.all<double>(0),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(0),
-                              ),
-                            ),
-                            splashFactory: NoSplash.splashFactory,
-                            animationDuration: Duration.zero,
-                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                            enableFeedback: false,
-                            // i want to remove the color change when the button is pressed
-                          ),
-                          onPressed: () => {
+                      GestureDetector(
+                          onTap: () => {
                                 setState(() {
                                   appState.changePressed();
                                 })
@@ -151,10 +137,11 @@ class _PokeDetailsState extends State<PokeDetails> {
                           onPressed: () => {detailsPopUp(context)}),
                     ],
                   ),
-                  SizedBox(width: MediaQuery.of(context).size.width / 4),
+                  SizedBox(width: MediaQuery.of(context).size.width / 3),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      SizedBox(height: MediaQuery.of(context).size.height / 20),
                       CardText(
                         'ID: ${widget.snapshot.data!.id}',
                         style: TextStyle(
@@ -167,7 +154,7 @@ class _PokeDetailsState extends State<PokeDetails> {
                       TextButton(
                         onPressed: () => {
                           print("test"),
-                          },
+                        },
                         child: Text(
                           getDexType(widget.snapshot.data!.id),
                           style: TextStyle(
@@ -177,12 +164,85 @@ class _PokeDetailsState extends State<PokeDetails> {
                           ),
                         ),
                       ),
+                      SizedBox(height: MediaQuery.of(context).size.height / 40),
+                      PokeType(widget.snapshot.data!.types),
                     ],
                   ),
                 ],
-              ),              
+              ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class PokeType extends StatelessWidget {
+  final List types;
+  const PokeType(this.types, {super.key});
+
+  String fixy(String fix) {
+    return fix.capitalize();
+  }
+
+  void typePopUp(BuildContext context, List types) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Center(
+            child: Text(
+              "Type Matchups",
+              style: TextStyle(
+                fontSize: 30,
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).primaryColor,
+              
+              ),
+            ),
+          ),
+          // need to update to show what strong and weak against
+          content: SizedBox(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                for (var type in types)
+                  Image(
+                    image: Svg(
+                        'assets/images/type_long_icons/${fixy(type['type']['name'])}.svg'),
+                  ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        typePopUp(context, types);
+      },
+      child: SizedBox(
+        child: Column(
+          children: [
+            for (var type in types)
+              Image(
+                image: Svg(
+                    'assets/images/type_long_icons/${fixy(type['type']['name'])}.svg'),
+              ),
+          ],
         ),
       ),
     );
