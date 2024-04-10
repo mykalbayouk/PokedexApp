@@ -33,7 +33,7 @@ class Pokemon {
       sprite: Image.network(json['sprites']['front_default']),
       shinySprite: Image.network(json['sprites']['front_shiny']),
       types: json['types'],
-      abilities: json['abilities'],
+      abilities: json['abilities'],      
     );
   }
 }

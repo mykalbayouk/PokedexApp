@@ -1,17 +1,24 @@
 // ignore_for_file: must_be_immutable
 
+import 'dart:convert';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:pokedex/PokeObjects/pokemon.dart';
 import 'package:pokedex/Utilities/CustomWidgets/abilities_list.dart';
 import 'package:pokedex/Utilities/CustomWidgets/custom_text.dart';
+import 'package:pokedex/Utilities/Functions/api.dart';
 import 'package:pokedex/Utilities/Functions/dex_type.dart';
 import 'package:pokedex/Utilities/CustomWidgets/pokeimage.dart';
 import 'package:pokedex/Utilities/Functions/string_extension.dart';
+import 'package:pokedex/pokeobjects/evolution.dart';
+import 'package:pokedex/pokeobjects/species.dart';
 import 'package:provider/provider.dart';
 
+
 bool isPressed = false;
+
 
 class DetailAppState extends ChangeNotifier {
   void changePressed() {
@@ -19,6 +26,18 @@ class DetailAppState extends ChangeNotifier {
     notifyListeners();
   }
 }
+
+Future<Species> fetchSpecies(String id) async {
+  final response = await getData('pokemon-species', id);
+  return Species.fromJson(jsonDecode(response));
+}
+
+Future<Evolution> fetchEvolutionChain(String id) async {
+  final response = await getData('evolution-chain', id);
+  return Evolution.fromJson(jsonDecode(response));
+}
+
+
 
 class PokeDetails extends StatefulWidget {
   AsyncSnapshot<Pokemon> snapshot;
@@ -44,36 +63,13 @@ class _PokeDetailsState extends State<PokeDetails> {
           title: CardText(
             "Details",
             style: TextStyle(
-              fontSize: 30,
+              fontSize: 20,
               fontWeight: FontWeight.bold,
               color: Theme.of(context).primaryColor,
             ),
             textAlign: TextAlign.center,
           ),
-          content: SizedBox(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                AbilitiesList(widget.snapshot.data!.abilities),
-                Text(
-                  'Height: ${widget.snapshot.data!.height}',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).primaryColor,
-                  ),
-                ),
-                Text(
-                  'Weight: ${widget.snapshot.data!.weight}',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).primaryColor,
-                  ),
-                ),
-              ],
-            ),
-          ),
+          content: speciesBuilder(widget.snapshot.data!.id.toString(), widget.snapshot.data!.height, widget.snapshot.data!.weight),
           actions: <Widget>[
             TextButton(
               onPressed: () {
@@ -86,7 +82,6 @@ class _PokeDetailsState extends State<PokeDetails> {
       },
     );
   }
-
   @override
   Widget build(BuildContext context) {
     var appState = context.read<DetailAppState>();
@@ -168,14 +163,77 @@ class _PokeDetailsState extends State<PokeDetails> {
                       PokeType(widget.snapshot.data!.types),
                     ],
                   ),
-                ],
-              ),
-            ],
+                ],                
+              ),                  
+              AbilitiesList(widget.snapshot.data!.abilities),     
+              SizedBox(height: MediaQuery.of(context).size.height / 40),
+              EvolutionDisplay(id: widget.snapshot.data!.id.toString()),                
+            ],            
           ),
         ),
       ),
     );
   }
+}
+
+FutureBuilder<Species> speciesBuilder(String id, int height, int weight) {
+  return FutureBuilder<Species>(
+    future: fetchSpecies(id),
+    builder: (context, snapshot) {
+      if (snapshot.hasData) {
+        return SizedBox(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [                 
+                Text(
+                  "The ${snapshot.data!.genus}",
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).primaryColor,
+                  ),
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height / 40),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Height: $height',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                    ),
+                    SizedBox(width: MediaQuery.of(context).size.width / 10),
+                    Text(
+                      'Weight: $weight',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height / 40),
+                Text(
+                  makePretty(snapshot.data!.flavorTextEntries[Random().nextInt(snapshot.data!.flavorTextEntries.length)]),
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.normal,
+                    color: Theme.of(context).primaryColor,
+                  ),
+                ),     
+              ],
+            ),
+          );
+      } else if (snapshot.hasError) {
+        return Text('${snapshot.error}');
+      }
+      return const CircularProgressIndicator();
+    },
+  );
 }
 
 class PokeType extends StatelessWidget {
@@ -248,3 +306,36 @@ class PokeType extends StatelessWidget {
     );
   }
 }
+
+class EvolutionDisplay extends StatelessWidget {
+  final String id;
+  const EvolutionDisplay({super.key, required this.id});
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<Species>(
+      future: fetchSpecies(id),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return FutureBuilder<Evolution>(
+            future: fetchEvolutionChain(snapshot.data!.evolutionChainID),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return Text('${snapshot.data!.start} -> ${snapshot.data!.middle} -> ${snapshot.data!.end}');                
+              } else if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              }
+              return const CircularProgressIndicator();
+            },
+          );
+        } else if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        }
+        return const CircularProgressIndicator();
+        
+      },
+      
+    );
+  }
+}
+
+  
