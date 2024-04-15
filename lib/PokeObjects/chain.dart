@@ -36,4 +36,13 @@ class Chain {
     }
     return evolutions;
   }
+
+  List<EvoDetails> get allDetails {
+    List<EvoDetails> details = [];
+    details.addAll(this.details);
+    for (Chain evo in evolvesTo) {
+      details.addAll(evo.allDetails);
+    }
+    return details;
+  }
 }

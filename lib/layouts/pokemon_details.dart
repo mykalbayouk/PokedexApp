@@ -12,6 +12,7 @@ import 'package:pokedex/Utilities/Functions/api.dart';
 import 'package:pokedex/Utilities/Functions/dex_type.dart';
 import 'package:pokedex/Utilities/CustomWidgets/pokeimage.dart';
 import 'package:pokedex/Utilities/Functions/string_extension.dart';
+import 'package:pokedex/pokeobjects/evo_details.dart';
 import 'package:pokedex/pokeobjects/get_chain.dart';
 import 'package:pokedex/pokeobjects/species.dart';
 import 'package:provider/provider.dart';
@@ -320,7 +321,7 @@ class EvolutionDisplay extends StatelessWidget {
             future: fetchEvolutionChain(snapshot.data!.evolutionChainID),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                return EvoImage(snapshot.data!.chain.allEvolutions);
+                return EvoImage(snapshot.data!.chain.allEvolutions, snapshot.data!.chain.allDetails);
               } else if (snapshot.hasError) {               
                 return Text('Error: ${snapshot.error}');
               }
@@ -340,7 +341,8 @@ class EvolutionDisplay extends StatelessWidget {
 
 class EvoImage extends StatelessWidget {
   final List<String> allEvolutions;
-  EvoImage(this.allEvolutions, {super.key});
+  final List<EvoDetails> evoDetails;
+  const EvoImage(this.allEvolutions, this.evoDetails, {super.key});
   @override
 
   
