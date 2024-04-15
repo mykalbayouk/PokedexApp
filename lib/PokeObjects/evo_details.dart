@@ -1,22 +1,22 @@
 class EvoDetails {
-  final String gender;
-  final String heldItem;
-  final String item;
-  final String knownMove;
-  final String knownMoveType;
-  final String location;
-  final String minAffection;
-  final String minBeauty;
-  final String minHappiness;
-  final String minLevel;
-  final String needsOverworldRain;
-  final String partySpecies;
-  final String partyType;
-  final String relativePhysicalStats;
-  final String timeOfDay;
-  final String tradeSpecies;
-  final String turnUpsideDown;
-  final String trigger;
+  late var gender;
+  late var heldItem;
+  late var item;
+  late var knownMove;
+  late var knownMoveType;
+  late var location;
+  late var minAffection;
+  late var minBeauty;
+  late var minHappiness;
+  late var minLevel;
+  late var needsOverworldRain;
+  late var partySpecies;
+  late var partyType;
+  late var relativePhysicalStats;
+  late var timeOfDay;
+  late var tradeSpecies;
+  late var turnUpsideDown;
+  late var trigger;
 
   EvoDetails({
     required this.gender,
@@ -41,24 +41,24 @@ class EvoDetails {
 
   factory EvoDetails.fromJson(Map<String, dynamic> json) {
     return EvoDetails(
-      gender: json['gender'],
-      heldItem: json['held_item'],
-      item: json['item'],
-      knownMove: json['known_move'],
-      knownMoveType: json['known_move_type'],
-      location: json['location'],
-      minAffection: json['min_affection'],
-      minBeauty: json['min_beauty'],
-      minHappiness: json['min_happiness'],
-      minLevel: json['min_level'],
-      needsOverworldRain: json['needs_overworld_rain'],
-      partySpecies: json['party_species'],
-      partyType: json['party_type'],
-      relativePhysicalStats: json['relative_physical_stats'],
-      timeOfDay: json['time_of_day'],
-      tradeSpecies: json['trade_species'],
-      turnUpsideDown: json['turn_upside_down'],
-      trigger: json['trigger']['name'],
+      gender: json['gender'] ?? '',
+      heldItem: json['held_item'] ?? '',
+      item: json['item'] ?? '',
+      knownMove: json['known_move'] ?? '',
+      knownMoveType: json['known_move_type'] ?? '',
+      location: json['location'] ?? '',
+      minAffection: json['min_affection'] ?? '',
+      minBeauty: json['min_beauty'] ?? '',
+      minHappiness: json['min_happiness'] ?? '',
+      minLevel: json['min_level'] ?? '',
+      needsOverworldRain: json['needs_overworld_rain'] ?? '',
+      partySpecies: json['party_species'] ?? '',
+      partyType: json['party_type'] ?? '',
+      relativePhysicalStats: json['relative_physical_stats'] ?? '',
+      timeOfDay: json['time_of_day'] ?? '',
+      tradeSpecies: json['trade_species'] ?? '',
+      turnUpsideDown: json['turn_upside_down'] ?? '',
+      trigger: json['trigger']['name'] ?? '',
     );
   }
 

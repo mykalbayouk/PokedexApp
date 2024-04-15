@@ -12,7 +12,7 @@ import 'package:pokedex/Utilities/Functions/api.dart';
 import 'package:pokedex/Utilities/Functions/dex_type.dart';
 import 'package:pokedex/Utilities/CustomWidgets/pokeimage.dart';
 import 'package:pokedex/Utilities/Functions/string_extension.dart';
-import 'package:pokedex/pokeobjects/evolution.dart';
+import 'package:pokedex/pokeobjects/get_chain.dart';
 import 'package:pokedex/pokeobjects/species.dart';
 import 'package:provider/provider.dart';
 
@@ -32,9 +32,9 @@ Future<Species> fetchSpecies(String id) async {
   return Species.fromJson(jsonDecode(response));
 }
 
-Future<Evolution> fetchEvolutionChain(String id) async {
+Future<GetChain> fetchEvolutionChain(String id) async {
   final response = await getData('evolution-chain', id);
-  return Evolution.fromJson(jsonDecode(response));
+  return GetChain.fromJson(jsonDecode(response));
 }
 
 
@@ -316,12 +316,12 @@ class EvolutionDisplay extends StatelessWidget {
       future: fetchSpecies(id),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          return FutureBuilder<Evolution>(
+          return FutureBuilder<GetChain>(
             future: fetchEvolutionChain(snapshot.data!.evolutionChainID),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                return Text('${snapshot.data!.start} -> ${snapshot.data!.middle} -> ${snapshot.data!.end}');                
-              } else if (snapshot.hasError) {
+                return EvoImage(snapshot.data!.chain.allEvolutions);
+              } else if (snapshot.hasError) {               
                 return Text('Error: ${snapshot.error}');
               }
               return const CircularProgressIndicator();
@@ -338,4 +338,104 @@ class EvolutionDisplay extends StatelessWidget {
   }
 }
 
+class EvoImage extends StatelessWidget {
+  final List<String> allEvolutions;
+  EvoImage(this.allEvolutions, {super.key});
+  @override
+
   
+
+  Widget build(BuildContext context) {
+    if (allEvolutions.length == 1) {
+      return FutureBuilder<List<Image>>(
+        future: getImage(allEvolutions, 1.5),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return SizedBox(
+                child: Image(
+                  image: snapshot.data![0].image,
+                ),
+              );
+          } else if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          }
+          return const CircularProgressIndicator();
+        },
+      );
+    } else if (allEvolutions.length == 2) {
+      return FutureBuilder<List<Image>>(
+        future: getImage(allEvolutions, 1),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return SizedBox(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image(
+                      image: snapshot.data![0].image,
+                    ),
+                    Icon(Icons.arrow_forward, color: Theme.of(context).primaryColor, size: 50,),
+                    Image(
+                      image: snapshot.data![1].image,
+                    ),
+                  ],
+                ),
+              );
+          } else if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          }
+          return const CircularProgressIndicator();
+        },
+      );
+
+    } else if (allEvolutions.length == 3) {
+      return FutureBuilder<List<Image>>(
+        future: getImage(allEvolutions, .75),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return SizedBox(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image(
+                      image: snapshot.data![0].image,
+                    ),
+                    Icon(Icons.arrow_forward, color: Theme.of(context).primaryColor, size: 50,),
+                    Image(
+                      image: snapshot.data![1].image,
+                    ),
+                    Icon(Icons.arrow_forward, color: Theme.of(context).primaryColor, size: 50,),
+                    Image(
+                      image: snapshot.data![2].image,
+                    ),
+                  ],
+                ),
+              );
+          } else if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          }
+          return const CircularProgressIndicator();
+        },
+      );
+
+    } else {
+      return Text("poop");
+      
+    }
+  }
+} 
+
+Future<List<Image>> getImage(List<String> ids, double scale) async {
+  List<Image> images = [];
+  for (var id in ids) {
+    final response = await getData('pokemon', id);
+    var data = jsonDecode(response);
+    images.add(Image(
+      image: NetworkImage(
+        data['sprites']['other']['official-artwork']['front_default'],
+        scale: 5 / scale,
+        ),
+      ));
+  }
+  return images;
+}
