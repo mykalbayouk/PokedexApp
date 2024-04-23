@@ -3,7 +3,9 @@
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:pokedex/PokeObjects/pokemon.dart';
 import 'package:pokedex/Utilities/CustomWidgets/abilities_list.dart';
@@ -12,14 +14,13 @@ import 'package:pokedex/Utilities/Functions/api.dart';
 import 'package:pokedex/Utilities/Functions/dex_type.dart';
 import 'package:pokedex/Utilities/CustomWidgets/pokeimage.dart';
 import 'package:pokedex/Utilities/Functions/string_extension.dart';
+import 'package:pokedex/layouts/pokemon_main.dart';
 import 'package:pokedex/pokeobjects/evo_details.dart';
 import 'package:pokedex/pokeobjects/get_chain.dart';
 import 'package:pokedex/pokeobjects/species.dart';
 import 'package:provider/provider.dart';
 
-
 bool isPressed = false;
-
 
 class DetailAppState extends ChangeNotifier {
   void changePressed() {
@@ -37,8 +38,6 @@ Future<GetChain> fetchEvolutionChain(String id) async {
   final response = await getData('evolution-chain', id);
   return GetChain.fromJson(jsonDecode(response));
 }
-
-
 
 class PokeDetails extends StatefulWidget {
   AsyncSnapshot<Pokemon> snapshot;
@@ -70,7 +69,8 @@ class _PokeDetailsState extends State<PokeDetails> {
             ),
             textAlign: TextAlign.center,
           ),
-          content: speciesBuilder(widget.snapshot.data!.id.toString(), widget.snapshot.data!.height, widget.snapshot.data!.weight),
+          content: speciesBuilder(widget.snapshot.data!.id.toString(),
+              widget.snapshot.data!.height, widget.snapshot.data!.weight),
           actions: <Widget>[
             TextButton(
               onPressed: () {
@@ -83,6 +83,7 @@ class _PokeDetailsState extends State<PokeDetails> {
       },
     );
   }
+
   @override
   Widget build(BuildContext context) {
     var appState = context.read<DetailAppState>();
@@ -164,12 +165,12 @@ class _PokeDetailsState extends State<PokeDetails> {
                       PokeType(widget.snapshot.data!.types),
                     ],
                   ),
-                ],                
-              ),                  
-              AbilitiesList(widget.snapshot.data!.abilities),     
+                ],
+              ),
+              AbilitiesList(widget.snapshot.data!.abilities),
               SizedBox(height: MediaQuery.of(context).size.height / 40),
-              EvolutionDisplay(id: widget.snapshot.data!.id.toString()),                
-            ],            
+              EvolutionDisplay(id: widget.snapshot.data!.id.toString()),
+            ],
           ),
         ),
       ),
@@ -183,52 +184,53 @@ FutureBuilder<Species> speciesBuilder(String id, int height, int weight) {
     builder: (context, snapshot) {
       if (snapshot.hasData) {
         return SizedBox(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [                 
-                Text(
-                  "The ${snapshot.data!.genus}",
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).primaryColor,
-                  ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                "The ${snapshot.data!.genus}",
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).primaryColor,
                 ),
-                SizedBox(height: MediaQuery.of(context).size.height / 40),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Height: $height',
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                        color: Theme.of(context).primaryColor,
-                      ),
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height / 40),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Height: $height',
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).primaryColor,
                     ),
-                    SizedBox(width: MediaQuery.of(context).size.width / 10),
-                    Text(
-                      'Weight: $weight',
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                        color: Theme.of(context).primaryColor,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: MediaQuery.of(context).size.height / 40),
-                Text(
-                  makePretty(snapshot.data!.flavorTextEntries[Random().nextInt(snapshot.data!.flavorTextEntries.length)]),
-                  style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.normal,
-                    color: Theme.of(context).primaryColor,
                   ),
-                ),     
-              ],
-            ),
-          );
+                  SizedBox(width: MediaQuery.of(context).size.width / 10),
+                  Text(
+                    'Weight: $weight',
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height / 40),
+              Text(
+                makePretty(snapshot.data!.flavorTextEntries[
+                    Random().nextInt(snapshot.data!.flavorTextEntries.length)]),
+                style: TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.normal,
+                  color: Theme.of(context).primaryColor,
+                ),
+              ),
+            ],
+          ),
+        );
       } else if (snapshot.hasError) {
         return Text('${snapshot.error}');
       }
@@ -257,7 +259,6 @@ class PokeType extends StatelessWidget {
                 fontSize: 30,
                 fontWeight: FontWeight.bold,
                 color: Theme.of(context).primaryColor,
-              
               ),
             ),
           ),
@@ -321,8 +322,14 @@ class EvolutionDisplay extends StatelessWidget {
             future: fetchEvolutionChain(snapshot.data!.evolutionChainID),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                return EvoImage(snapshot.data!.chain.allEvolutions, snapshot.data!.chain.allDetails);
-              } else if (snapshot.hasError) {               
+                return Card(                         
+                  child: SizedBox(
+                    height: MediaQuery.of(context).size.height / 8,                    
+                    child: EvoImage(snapshot.data!.chain.allEvolutions,
+                        snapshot.data!.chain.allDetails),
+                  ),
+                );
+              } else if (snapshot.hasError) {
                 return Text('Error: ${snapshot.error}');
               }
               return const CircularProgressIndicator();
@@ -332,9 +339,7 @@ class EvolutionDisplay extends StatelessWidget {
           return Text('Error: ${snapshot.error}');
         }
         return const CircularProgressIndicator();
-        
       },
-      
     );
   }
 }
@@ -344,9 +349,6 @@ class EvoImage extends StatelessWidget {
   final List<EvoDetails> evoDetails;
   const EvoImage(this.allEvolutions, this.evoDetails, {super.key});
   @override
-
-  
-
   Widget build(BuildContext context) {
     if (allEvolutions.length == 1) {
       return FutureBuilder<List<Image>>(
@@ -354,10 +356,10 @@ class EvoImage extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return SizedBox(
-                child: Image(
-                  image: snapshot.data![0].image,
-                ),
-              );
+              child: Image(
+                image: snapshot.data![0].image,
+              ),
+            );
           } else if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           }
@@ -370,62 +372,90 @@ class EvoImage extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return SizedBox(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  GestureDetector(
+                    onTap:() =>  selectedMon(context, allEvolutions[0]),
+                    child: Image(
                       image: snapshot.data![0].image,
                     ),
-                    Icon(Icons.arrow_forward, color: Theme.of(context).primaryColor, size: 50,),
-                    Image(
+                  ),
+                  Icon(
+                    Icons.arrow_forward,
+                    color: Theme.of(context).primaryColor,
+                    size: 50,
+                  ),
+                  GestureDetector(
+                    onTap: () => selectedMon(context, allEvolutions[1]),
+                    child: Image(
                       image: snapshot.data![1].image,
                     ),
-                  ],
-                ),
-              );
+                  ),
+                ],
+              ),
+            );
           } else if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           }
           return const CircularProgressIndicator();
         },
       );
-
     } else if (allEvolutions.length == 3) {
       return FutureBuilder<List<Image>>(
         future: getImage(allEvolutions, .75),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return SizedBox(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  GestureDetector(
+                    onTap: () => selectedMon(context, allEvolutions[0]),
+                    child: Image(
                       image: snapshot.data![0].image,
                     ),
-                    Icon(Icons.arrow_forward, color: Theme.of(context).primaryColor, size: 50,),
-                    Image(
+                  ),
+                  Icon(
+                    Icons.arrow_forward,
+                    color: Theme.of(context).primaryColor,
+                    size: 50,
+                  ),
+                  GestureDetector(
+                    onTap: () => selectedMon(context, allEvolutions[1]),
+                    child: Image(
                       image: snapshot.data![1].image,
                     ),
-                    Icon(Icons.arrow_forward, color: Theme.of(context).primaryColor, size: 50,),
-                    Image(
+                  ),
+                  Icon(
+                    Icons.arrow_forward,
+                    color: Theme.of(context).primaryColor,
+                    size: 50,
+                  ),
+                  GestureDetector(
+                    onTap: () => selectedMon(context, allEvolutions[2]),
+                    child: Image(
                       image: snapshot.data![2].image,
                     ),
-                  ],
-                ),
-              );
+                  ),
+                ],
+              ),
+            );
           } else if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           }
           return const CircularProgressIndicator();
         },
       );
-
     } else {
       return Text("poop");
-      
     }
   }
-} 
+}
+void selectedMon(BuildContext context, String id) {
+  print(id);
+
+}
 
 Future<List<Image>> getImage(List<String> ids, double scale) async {
   List<Image> images = [];
@@ -436,8 +466,8 @@ Future<List<Image>> getImage(List<String> ids, double scale) async {
       image: NetworkImage(
         data['sprites']['other']['official-artwork']['front_default'],
         scale: 5 / scale,
-        ),
-      ));
+      ),
+    ));
   }
   return images;
 }

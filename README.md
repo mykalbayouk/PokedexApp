@@ -19,12 +19,14 @@
 - [ ] add types to details screen below Dex Type
 - [ ] add popup when you click dex
 - [ ] open new screen when click where to find (or popup)
-- [*] add evolution chain to details screen
+- [ ] add evolution chain to details screen
 - - [ ] make evolution pokemon clickable to pop details and go to main screen
 - [ ] add moves to details screen
 - [ ] add favorite button to bottom of details screen
 - [ ] update types in details to API ones instead of svg
+- [ ] add cry sounds when u click mon
 
 // BUGS
 - [ ] on actual device, when you search pokemon, list does not move (need to figure out proper fix to jank fix)
+
 
