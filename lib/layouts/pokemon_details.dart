@@ -3,10 +3,8 @@
 import 'dart:convert';
 import 'dart:math';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokedex/PokeObjects/pokemon.dart';
 import 'package:pokedex/Utilities/CustomWidgets/abilities_list.dart';
 import 'package:pokedex/Utilities/CustomWidgets/custom_text.dart';
@@ -265,13 +263,10 @@ class PokeType extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 for (var type in types)
-                  Image(
-                    image: Svg(                                                
-                        'assets/images/type_long_icons/${fixy(type['type']['name'])}.svg'                        
-                        ),
-                  ),
+                  SvgPicture.asset('assets/images/type_long_icons/${fixy(type['type']['name'])}.svg'),                  
               ],              
             ),
+            
           ),
           actions: <Widget>[
             TextButton(
@@ -296,11 +291,7 @@ class PokeType extends StatelessWidget {
         child: Column(
           children: [
             for (var type in types)
-              Image(
-                image: Svg(
-                    'assets/images/type_long_icons/${fixy(type['type']['name'])}.svg',
-                    ),
-              ),
+              SvgPicture.asset('assets/images/type_long_icons/${fixy(type['type']['name'])}.svg'),
           ],
         ),
       ),
