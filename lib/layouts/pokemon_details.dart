@@ -3,9 +3,7 @@
 import 'dart:convert';
 import 'dart:math';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:pokedex/PokeObjects/pokemon.dart';
 import 'package:pokedex/Utilities/CustomWidgets/abilities_list.dart';
@@ -14,7 +12,6 @@ import 'package:pokedex/Utilities/Functions/api.dart';
 import 'package:pokedex/Utilities/Functions/dex_type.dart';
 import 'package:pokedex/Utilities/CustomWidgets/pokeimage.dart';
 import 'package:pokedex/Utilities/Functions/string_extension.dart';
-import 'package:pokedex/layouts/pokemon_main.dart';
 import 'package:pokedex/pokeobjects/evo_details.dart';
 import 'package:pokedex/pokeobjects/get_chain.dart';
 import 'package:pokedex/pokeobjects/species.dart';
