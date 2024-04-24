@@ -1,0 +1,41 @@
+{
+    "flutter": {
+        "platforms": {
+            "android": {
+                "default": {
+                    "projectId": "pokedexapp-b6006",
+                    "appId": "1:452192915558:android:d13266008dc1339aca5da7",
+                    "fileOutput": "android/app/google-services.json"
+                }
+            },
+            "ios": {
+                "default": {
+                    "projectId": "pokedexapp-b6006",
+                    "appId": "1:452192915558:ios:ceded5c9ef2c252aca5da7",
+                    "uploadDebugSymbols": false,
+                    "fileOutput": "ios/Runner/GoogleService-Info.plist"
+                }
+            },
+            "macos": {
+                "default": {
+                    "projectId": "pokedexapp-b6006",
+                    "appId": "1:452192915558:ios:4d59e8025c6cf34aca5da7",
+                    "uploadDebugSymbols": false,
+                    "fileOutput": "macos/Runner/GoogleService-Info.plist"
+                }
+            },
+            "dart": {
+                "lib/firebase_options.dart": {
+                    "projectId": "pokedexapp-b6006",
+                    "configurations": {
+                        "android": "1:452192915558:android:d13266008dc1339aca5da7",
+                        "ios": "1:452192915558:ios:ceded5c9ef2c252aca5da7",
+                        "macos": "1:452192915558:ios:4d59e8025c6cf34aca5da7",
+                        "web": "1:452192915558:web:4601d6a327538d42ca5da7",
+                        "windows": "1:452192915558:web:7b609bcaaee8b19cca5da7"
+                    }
+                }
+            }
+        }
+    }
+}

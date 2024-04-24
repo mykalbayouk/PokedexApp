@@ -167,8 +167,7 @@ class _PokeDetailsState extends State<PokeDetails> {
                   ),
                 ],
               ),
-              AbilitiesList(widget.snapshot.data!.abilities),
-              SizedBox(height: MediaQuery.of(context).size.height / 40),
+              AbilitiesList(widget.snapshot.data!.abilities),              
               EvolutionDisplay(id: widget.snapshot.data!.id.toString()),
             ],
           ),
@@ -269,10 +268,11 @@ class PokeType extends StatelessWidget {
               children: [
                 for (var type in types)
                   Image(
-                    image: Svg(
-                        'assets/images/type_long_icons/${fixy(type['type']['name'])}.svg'),
+                    image: Svg(                                                
+                        'assets/images/type_long_icons/${fixy(type['type']['name'])}.svg'                        
+                        ),
                   ),
-              ],
+              ],              
             ),
           ),
           actions: <Widget>[
@@ -300,7 +300,8 @@ class PokeType extends StatelessWidget {
             for (var type in types)
               Image(
                 image: Svg(
-                    'assets/images/type_long_icons/${fixy(type['type']['name'])}.svg'),
+                    'assets/images/type_long_icons/${fixy(type['type']['name'])}.svg',
+                    ),
               ),
           ],
         ),
@@ -381,10 +382,23 @@ class EvoImage extends StatelessWidget {
                       image: snapshot.data![0].image,
                     ),
                   ),
-                  Icon(
-                    Icons.arrow_forward,
-                    color: Theme.of(context).primaryColor,
-                    size: 50,
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        makePretty(evoDetails[0].trigger.toString().capitalize()),
+                        style: TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                      ),
+                      Icon(
+                        Icons.arrow_forward,
+                        color: Theme.of(context).primaryColor,
+                        size: 50,
+                      ),
+                    ],
                   ),
                   GestureDetector(
                     onTap: () => selectedMon(context, allEvolutions[1]),
@@ -416,10 +430,23 @@ class EvoImage extends StatelessWidget {
                       image: snapshot.data![0].image,
                     ),
                   ),
-                  Icon(
-                    Icons.arrow_forward,
-                    color: Theme.of(context).primaryColor,
-                    size: 50,
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        makePretty(evoDetails[0].trigger.toString().capitalize()),
+                        style: TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                      ),
+                      Icon(
+                        Icons.arrow_forward,
+                        color: Theme.of(context).primaryColor,
+                        size: 50,
+                      ),
+                    ],
                   ),
                   GestureDetector(
                     onTap: () => selectedMon(context, allEvolutions[1]),
@@ -427,10 +454,23 @@ class EvoImage extends StatelessWidget {
                       image: snapshot.data![1].image,
                     ),
                   ),
-                  Icon(
-                    Icons.arrow_forward,
-                    color: Theme.of(context).primaryColor,
-                    size: 50,
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        makePretty(evoDetails[1].trigger.toString().capitalize()),
+                        style: TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                      ),
+                      Icon(
+                        Icons.arrow_forward,
+                        color: Theme.of(context).primaryColor,
+                        size: 50,
+                      ),
+                    ],
                   ),
                   GestureDetector(
                     onTap: () => selectedMon(context, allEvolutions[2]),
