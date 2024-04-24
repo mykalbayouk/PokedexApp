@@ -79,6 +79,13 @@ FutureBuilder<Pokemon> setupPokemon(
               ),
               PokeImage(snapshot.data!.image, 1),
               ElevatedButton(
+                style: ButtonStyle(
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(11.0),
+                    ),
+                  ),                  
+                ),
                 onPressed: () {                  
                   Navigator.push(
                     context,
@@ -183,7 +190,7 @@ class _PokemonMainState extends State<PokemonMain>
                     height: options.length * 70.0,
                     width: MediaQuery.of(context).size.width * .68,
                     child: ListView.separated(
-                      padding: EdgeInsets.all(5),
+                      padding: const EdgeInsets.all(5),
                       shrinkWrap: false,
                       itemCount: options.length,
                       itemBuilder: (BuildContext context, int index) {
@@ -419,7 +426,7 @@ class PokeList extends StatelessWidget {
 
     SizedBox typeIcon(String type, bool selected) {
       if (type == '') {
-        return SizedBox();
+        return const SizedBox();
       }
 
       return SizedBox(

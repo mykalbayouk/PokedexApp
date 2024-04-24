@@ -13,18 +13,24 @@
 - 1009 - 1010
 - 1020 - 1023 
 
+// super special cases
+- Basculin name & evolution
+- meowstic name & evolution 
+
+(it appears if the name is wrong evololution post DNW)
+
 
 // TODO
-- [ ] modify abilities screen in details popup to show quick description abt each ability (may move to seperate location)
-- [ ] add types to details screen below Dex Type
+- [X] modify abilities screen in details popup to show quick description abt each ability (may move to seperate location)
+- [X] add types to details screen below Dex Type
 - [ ] add popup when you click dex
 - [ ] open new screen when click where to find (or popup)
-- [ ] add evolution chain to details screen
+- [X] add evolution chain to details screen
 - - [ ] make evolution pokemon clickable to pop details and go to main screen
-- [ ] add moves to details screen
+- [*] add moves to details screen  ** 
 - [ ] add favorite button to bottom of details screen
-- [ ] update types in details to API ones instead of svg
-- [ ] add cry sounds when u click mon
+- [*] update types in details to API ones instead of svg **
+- [ ] add cry sounds when u click mon (maybe when u click shiny mon)
 
 // BUGS
 - [ ] on actual device, when you search pokemon, list does not move (need to figure out proper fix to jank fix)

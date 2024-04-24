@@ -21,14 +21,26 @@ class AbilitiesList extends StatelessWidget {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text(ability),
+          title: Text(ability,
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).primaryColor,
+              )
+          ),
           content: FutureBuilder<Ability>(
             future: fetchAbility(url),
             builder: (context, snapshot) {
               if (snapshot.hasData) {                
-                return Text(snapshot.data!.description);
+                return Text(
+                  snapshot.data!.description,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.normal,
+                    color: Theme.of(context).primaryColor,
+                  ),
+                );
               } else if (snapshot.hasError) {
-                print(snapshot.error);
                 return Text('Error: ${snapshot.error}');
               }
               return const CircularProgressIndicator();
@@ -61,16 +73,18 @@ class AbilitiesList extends StatelessWidget {
               ),
             ),             
             for (var ability in abilities)
-              GestureDetector(
-                onTap: () => abilityPopUp(context, ability['ability']['name'].toString().capitalize(), ability['ability']['url']),
-                child: CardText(
-                  makePretty(ability['ability']['name'].toString().capitalize()),
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    color: ability['is_hidden'] ? Theme.of(context).primaryColorDark : Theme.of(context).primaryColor,
+              Flexible(
+                child: GestureDetector(
+                  onTap: () => abilityPopUp(context, ability['ability']['name'].toString().capitalize(), ability['ability']['url']),
+                  child: CardText(
+                    makePretty(ability['ability']['name'].toString().capitalize()),
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: ability['is_hidden'] ? Theme.of(context).primaryColorDark : Theme.of(context).primaryColor,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
-                  textAlign: TextAlign.center,
                 ),
               ),              
           ],
