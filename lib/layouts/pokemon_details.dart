@@ -8,6 +8,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokedex/PokeObjects/pokemon.dart';
 import 'package:pokedex/Utilities/CustomWidgets/abilities_list.dart';
 import 'package:pokedex/Utilities/CustomWidgets/custom_text.dart';
+import 'package:pokedex/Utilities/CustomWidgets/type_matchups.dart';
 import 'package:pokedex/Utilities/Functions/api.dart';
 import 'package:pokedex/Utilities/Functions/dex_type.dart';
 import 'package:pokedex/Utilities/CustomWidgets/pokeimage.dart';
@@ -257,18 +258,54 @@ class PokeType extends StatelessWidget {
               ),
             ),
           ),
-          // need to update to show what strong and weak against
-          content: SizedBox(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                for (var type in types)
-                  SvgPicture.asset('assets/images/type_long_icons/${fixy(type['type']['name'])}.svg'),                  
-              ],              
-            ),
-            
-          ),
+          content: TypeMatchups(types),
           actions: <Widget>[
+            IconButton(
+              onPressed: () => {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Center(
+                        child: Text(
+                          "Info",
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                        ),
+                      ),
+                      content: SizedBox(
+                        height: MediaQuery.of(context).size.height / 18,
+                        child: Text(
+                          "If a type is in a Red Border, it means it is a quadruple type.\n So either .25x or 4x damage depending on section.",
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w500,
+                            color: Theme.of(context).primaryColorDark,
+                          ),
+                        ),
+                      ),
+                      actions: <Widget>[
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: const Text('Close'),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              
+              },
+              icon: Icon(
+                Icons.info,
+                color: Theme.of(context).primaryColor,
+              ),
+            ),  
+            SizedBox(width: MediaQuery.of(context).size.width / 2.5),                  
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();

@@ -7,6 +7,7 @@ import 'package:pokedex/Utilities/CustomWidgets/pokeimage.dart';
 import 'package:pokedex/Utilities/Functions/read_txt_file.dart';
 import 'package:pokedex/Utilities/Functions/api.dart';
 import 'package:pokedex/Utilities/Functions/string_extension.dart';
+import 'package:pokedex/Utilities/Functions/type_color.dart';
 import 'package:pokedex/layouts/pokemon_details.dart';
 import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
@@ -297,7 +298,7 @@ class _PokemonMainState extends State<PokemonMain>
               highlightColor: Colors.transparent,
               icon: Image.asset(
                 'assets/images/Pokeball.png',
-                height: MediaQuery.of(context).size.height / 20,
+                height: MediaQuery.of(context).size.height / 22,
                 width: MediaQuery.of(context).size.width,
               ),
               onPressed: () {
@@ -380,49 +381,7 @@ class PokeList extends StatelessWidget {
         );
         appstate.setUpdated(false);
       });
-    }
-
-    Color chooseColor(String type) {
-      if (type == 'Grass') {
-        return Colors.green;
-      } else if (type == 'Poison') {
-        return Colors.purple;
-      } else if (type == 'Fire') {
-        return Colors.orange;
-      } else if (type == 'Water') {
-        return Colors.blue;
-      } else if (type == 'Bug') {
-        return Colors.green;
-      } else if (type == 'Normal') {
-        return Colors.grey;
-      } else if (type == 'Electric') {
-        return Colors.yellowAccent.shade700;
-      } else if (type == 'Ground') {
-        return Colors.brown;
-      } else if (type == 'Fairy') {
-        return Colors.pink;
-      } else if (type == 'Fighting') {
-        return Colors.red;
-      } else if (type == 'Psychic') {
-        return Colors.purple;
-      } else if (type == 'Rock') {
-        return Colors.brown;
-      } else if (type == 'Steel') {
-        return Colors.grey;
-      } else if (type == 'Ice') {
-        return Colors.blue;
-      } else if (type == 'Ghost') {
-        return Colors.purple;
-      } else if (type == 'Dragon') {
-        return Colors.blue;
-      } else if (type == 'Flying') {
-        return Colors.blue;
-      } else if (type == 'Dark') {
-        return Colors.black;
-      } else {
-        return Colors.grey;
-      }
-    }
+    }    
 
     SizedBox typeIcon(String type, bool selected) {
       if (type == '') {

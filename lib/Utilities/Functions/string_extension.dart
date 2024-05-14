@@ -4,6 +4,10 @@ extension StringExtension on String {
     }
 }
 
+String capitalize(String s) {
+  return s.capitalize();
+}
+
 String makePretty(String ugly) {
   List<String> words = ugly.replaceAll('-', ' ').replaceAll('\n', ' ').split(' ');
   for (int i = 0; i < words.length; i++) {

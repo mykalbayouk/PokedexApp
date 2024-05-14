@@ -22,7 +22,7 @@ class MainApp extends StatelessWidget {
           title: 'Pokedex App',
           theme: ThemeData(
             useMaterial3: true,
-            colorScheme: ColorScheme.fromSeed(seedColor: Colors.red),
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.red),            
           ),
           home: const PokemonMain(),
         );
