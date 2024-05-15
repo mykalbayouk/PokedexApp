@@ -16,12 +16,13 @@ class AbilitiesList extends StatelessWidget {
     return Ability.fromJson(jsonDecode(response));
   }
 
-  void abilityPopUp(BuildContext context, String ability, String url) {    
+  void abilityPopUp(BuildContext context, String ability, String url, bool isHidden) {    
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text(ability,
+          backgroundColor: Theme.of(context).secondaryHeaderColor,
+          title: Text(makePretty(ability),
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
@@ -33,6 +34,7 @@ class AbilitiesList extends StatelessWidget {
             builder: (context, snapshot) {
               if (snapshot.hasData) {                
                 return Text(
+                  isHidden ? 'HIDDEN ABILITY\n\n${snapshot.data!.description}' :
                   snapshot.data!.description,
                   style: TextStyle(
                     fontSize: 14,
@@ -75,7 +77,7 @@ class AbilitiesList extends StatelessWidget {
             for (var ability in abilities)
               Flexible(
                 child: GestureDetector(
-                  onTap: () => abilityPopUp(context, ability['ability']['name'].toString().capitalize(), ability['ability']['url']),
+                  onTap: () => abilityPopUp(context, ability['ability']['name'].toString().capitalize(), ability['ability']['url'], ability['is_hidden']),
                   child: CardText(
                     makePretty(ability['ability']['name'].toString().capitalize()),
                     style: TextStyle(

@@ -58,6 +58,7 @@ class _PokeDetailsState extends State<PokeDetails> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          backgroundColor: Theme.of(context).primaryColorLight,
           title: CardText(
             "Details",
             style: TextStyle(
@@ -248,6 +249,7 @@ class PokeType extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          backgroundColor: Theme.of(context).primaryColorLight,
           title: Center(
             child: Text(
               "Type Matchups",
@@ -266,6 +268,8 @@ class PokeType extends StatelessWidget {
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
+                      
+                      backgroundColor: Theme.of(context).secondaryHeaderColor,
                       title: Center(
                         child: Text(
                           "Info",
@@ -278,13 +282,15 @@ class PokeType extends StatelessWidget {
                       ),
                       content: SizedBox(
                         height: MediaQuery.of(context).size.height / 18,
+                        width: MediaQuery.of(context).size.width / 1.5,
                         child: Text(
-                          "If a type is in a Red Border, it means it is a quadruple type.\n So either .25x or 4x damage depending on section.",
+                          "Red Border means it is a quadruple type.\nSo either .25x or 4x damage depending on section.",
                           style: TextStyle(
                             fontSize: 10,
                             fontWeight: FontWeight.w500,
-                            color: Theme.of(context).primaryColorDark,
+                            color: Theme.of(context).primaryColor,
                           ),
+                          textAlign: TextAlign.center,
                         ),
                       ),
                       actions: <Widget>[

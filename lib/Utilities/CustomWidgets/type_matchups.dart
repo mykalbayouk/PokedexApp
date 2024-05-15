@@ -54,12 +54,13 @@ class TypeMatchups extends StatelessWidget {
       }
     }
     for (var x = 0; x < matchups['noDamageFrom']!.length; x++) {
-      if (matchups['halfDamageFrom']!.contains(matchups['noDamageFrom']?[x])) {
-        matchups['halfDamageFrom']!.remove(matchups['noDamageFrom']?[x]);
+      if (matchups['halfDamageFrom']!
+              .contains(matchups['noDamageFrom']?[x])) {
+        matchups['halfDamageFrom']!.remove(matchups['noDamageFrom']?[x]);      
       } else if (matchups['doubleDamageFrom']!
-          .contains(matchups['noDamageFrom']?[x])) {
+              .contains(matchups['noDamageFrom']?[x])) {
         matchups['doubleDamageFrom']!.remove(matchups['noDamageFrom']?[x]);
-      }
+      }      
     }
     matchups['doubleDamageFrom']
         ?.removeWhere((element) => removedItems.contains(element));
@@ -120,7 +121,7 @@ class TypeMatchups extends StatelessWidget {
             height: MediaQuery.of(context).size.height / 3,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
+              children: [                
                 Column(
                   children: [
                     Text(
@@ -141,7 +142,7 @@ class TypeMatchups extends StatelessWidget {
                               color:
                                   superType[matchups['doubleDamageFrom']![i]] ==
                                           true
-                                      ? Colors.red
+                                      ? Theme.of(context).secondaryHeaderColor
                                       : Colors.transparent,
                               width: 2,
                             ),

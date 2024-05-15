@@ -3,7 +3,6 @@ import 'package:pokedex/layouts/pokemon_details.dart';
 import 'package:pokedex/layouts/pokemon_main.dart';
 import 'package:provider/provider.dart';
 
-
 void main() {
   runApp(const MainApp());
 }
@@ -17,12 +16,14 @@ class MainApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => PokeAppState()),
         ChangeNotifierProvider(create: (context) => DetailAppState()),
       ],
-      builder: (context, child) { 
+      builder: (context, child) {
         return MaterialApp(
           title: 'Pokedex App',
           theme: ThemeData(
             useMaterial3: true,
-            colorScheme: ColorScheme.fromSeed(seedColor: Colors.red),            
+            colorScheme: ColorScheme.fromSwatch(
+              primarySwatch: Colors.red,
+            ),
           ),
           home: const PokemonMain(),
         );
