@@ -32,4 +32,5 @@ flutter:
     - assets/images/
     - assets/images/type_short_icons/
     - assets/images/type_long_icons/
+    - assets/images/attack_type/
     - assets/raw/

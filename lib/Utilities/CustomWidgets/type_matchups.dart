@@ -136,23 +136,26 @@ class TypeMatchups extends StatelessWidget {
                         i < matchups['doubleDamageFrom']!.length;
                         i++)
                       Flexible(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color:
-                                  superType[matchups['doubleDamageFrom']![i]] ==
-                                          true
-                                      ? Theme.of(context).secondaryHeaderColor
-                                      : Colors.transparent,
-                              width: 2,
+                        child: Padding(
+                          padding: const EdgeInsets.all(1.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color:
+                                    superType[matchups['doubleDamageFrom']![i]] ==
+                                            true
+                                        ? Theme.of(context).primaryColor
+                                        : Colors.transparent,
+                                width: 2,
+                              ),
                             ),
-                          ),
-                          child: SvgPicture.asset(
-                            'assets/images/type_short_icons/${makePretty(matchups['doubleDamageFrom']![i])}.svg',
-                            height: MediaQuery.of(context).size.height / 10,
-                            width: MediaQuery.of(context).size.width / 10,
-                            color: chooseColor(
-                                makePretty(matchups['doubleDamageFrom']![i])),
+                            child: SvgPicture.asset(
+                              'assets/images/type_short_icons/${makePretty(matchups['doubleDamageFrom']![i])}.svg',
+                              height: MediaQuery.of(context).size.height / 10,
+                              width: MediaQuery.of(context).size.width / 10,
+                              color: chooseColor(
+                                  makePretty(matchups['doubleDamageFrom']![i])),
+                            ),
                           ),
                         ),
                       ),
@@ -176,7 +179,7 @@ class TypeMatchups extends StatelessWidget {
                               color:
                                   superType[matchups['halfDamageFrom']![i]] ==
                                           true
-                                      ? Colors.red
+                                      ? Theme.of(context).primaryColor
                                       : Colors.transparent,
                               width: 2,
                             ),

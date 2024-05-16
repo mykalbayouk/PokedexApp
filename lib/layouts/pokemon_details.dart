@@ -3,7 +3,9 @@
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokedex/PokeObjects/pokemon.dart';
 import 'package:pokedex/Utilities/CustomWidgets/abilities_list.dart';
@@ -15,6 +17,7 @@ import 'package:pokedex/Utilities/CustomWidgets/pokeimage.dart';
 import 'package:pokedex/Utilities/Functions/string_extension.dart';
 import 'package:pokedex/pokeobjects/evo_details.dart';
 import 'package:pokedex/pokeobjects/get_chain.dart';
+import 'package:pokedex/pokeobjects/move.dart';
 import 'package:pokedex/pokeobjects/species.dart';
 import 'package:provider/provider.dart';
 
@@ -116,7 +119,7 @@ class _PokeDetailsState extends State<PokeDetails> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Column(
-                    children: [                      
+                    children: [
                       GestureDetector(
                           onTap: () => {
                                 setState(() {
@@ -165,8 +168,9 @@ class _PokeDetailsState extends State<PokeDetails> {
                   ),
                 ],
               ),
-              AbilitiesList(widget.snapshot.data!.abilities),              
+              AbilitiesList(widget.snapshot.data!.abilities),
               EvolutionDisplay(id: widget.snapshot.data!.id.toString()),
+              MovesDisplay(widget.snapshot.data!.moves),
             ],
           ),
         ),
@@ -268,7 +272,6 @@ class PokeType extends StatelessWidget {
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
-                      
                       backgroundColor: Theme.of(context).secondaryHeaderColor,
                       title: Center(
                         child: Text(
@@ -284,7 +287,7 @@ class PokeType extends StatelessWidget {
                         height: MediaQuery.of(context).size.height / 18,
                         width: MediaQuery.of(context).size.width / 1.5,
                         child: Text(
-                          "Red Border means it is a quadruple type.\nSo either .25x or 4x damage depending on section.",
+                          "Border means it is a quadruple type.\nSo either .25x or 4x damage depending on section.",
                           style: TextStyle(
                             fontSize: 10,
                             fontWeight: FontWeight.w500,
@@ -304,14 +307,13 @@ class PokeType extends StatelessWidget {
                     );
                   },
                 ),
-              
               },
               icon: Icon(
                 Icons.info,
                 color: Theme.of(context).primaryColor,
               ),
-            ),  
-            SizedBox(width: MediaQuery.of(context).size.width / 2.5),                  
+            ),
+            SizedBox(width: MediaQuery.of(context).size.width / 2.5),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
@@ -334,7 +336,8 @@ class PokeType extends StatelessWidget {
         child: Column(
           children: [
             for (var type in types)
-              SvgPicture.asset('assets/images/type_long_icons/${fixy(type['type']['name'])}.svg'),
+              SvgPicture.asset(
+                  'assets/images/type_long_icons/${fixy(type['type']['name'])}.svg'),
           ],
         ),
       ),
@@ -355,9 +358,9 @@ class EvolutionDisplay extends StatelessWidget {
             future: fetchEvolutionChain(snapshot.data!.evolutionChainID),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                return Card(                         
+                return Card(
                   child: SizedBox(
-                    height: MediaQuery.of(context).size.height / 8,                    
+                    height: MediaQuery.of(context).size.height / 8,
                     child: EvoImage(snapshot.data!.chain.allEvolutions,
                         snapshot.data!.chain.allDetails),
                   ),
@@ -428,7 +431,7 @@ class EvoImage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   GestureDetector(
-                    onTap:() =>  selectedMon(context, allEvolutions[0]),
+                    onTap: () => selectedMon(context, allEvolutions[0]),
                     child: Image(
                       image: snapshot.data![0].image,
                     ),
@@ -549,9 +552,9 @@ class EvoImage extends StatelessWidget {
     }
   }
 }
+
 void selectedMon(BuildContext context, String id) {
   print(id);
-
 }
 
 Future<List<Image>> getImage(List<String> ids, double scale) async {
@@ -567,4 +570,310 @@ Future<List<Image>> getImage(List<String> ids, double scale) async {
     ));
   }
   return images;
+}
+
+class MovesDisplay extends StatelessWidget {
+  final List moves;
+  const MovesDisplay(this.moves, {super.key});
+
+  Future<Move> fetchMove(String move) async {
+    final response = await getData('move', move);    
+    return Move.fromJson(jsonDecode(response));
+  }
+
+  moveDescripPopup(BuildContext context, String move) {    
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Theme.of(context).primaryColorLight,
+          title: Center(
+            child: Text(
+              makePretty(move),
+              style: TextStyle(
+                fontSize: 30,
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).primaryColor,
+              ),
+            ),
+          ),
+          content: FutureBuilder<Move>(
+            future: fetchMove(move),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return SizedBox(
+                  height: MediaQuery.of(context).size.height / 8,
+                  width: MediaQuery.of(context).size.width,
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SvgPicture.asset(
+                                'assets/images/type_long_icons/${makePretty(snapshot.data!.type)}.svg',
+                                height: MediaQuery.of(context).size.height / 30,
+                                width: MediaQuery.of(context).size.width / 30,
+                              ),
+                              SvgPicture.asset(
+                                'assets/images/attack_type/${snapshot.data!.damageClass}.svg',
+                                height: MediaQuery.of(context).size.height / 30,
+                                width: MediaQuery.of(context).size.width / 30,
+                              ),
+                            ],
+                          ),
+                          SizedBox(width: MediaQuery.of(context).size.width / 40),
+                          Flexible(
+                            child: Text(
+                              makePretty(snapshot.data!.description),
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                                color: Theme.of(context).primaryColor,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: MediaQuery.of(context).size.height / 40),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Text(
+                            snapshot.data!.power == 0 ? 'Power: -' :
+                            'Power: ${snapshot.data!.power}',
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                          ),
+                          Text(
+                            snapshot.data!.accuracy == 0 ? 'Accuracy: -' :
+                            'Accuracy: ${snapshot.data!.accuracy}',
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                          ),
+                          Text(
+                            snapshot.data!.pp == 0 ? 'PP: -' :
+                            'PP: ${snapshot.data!.pp}',
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                          ),
+
+                        ],
+                      )
+                    ],
+                  ),
+                );
+              } else if (snapshot.hasError) {                
+                return Text('Error: ${snapshot.error}');
+              }
+              return const CircularProgressIndicator();
+            },
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
+
+  // 0 - lvl up, 1 - tm, 2 - tutor, 3 - egg
+  movesPopUp(BuildContext context, List movesUN, String type) {     
+    Map<String, int>  moves = {};
+    for (var i = 0; i < movesUN.length; i++) {
+      int versionGroupDetailsLength = movesUN[i]['version_group_details'].length;
+      if (movesUN[i]['version_group_details'][versionGroupDetailsLength - 1]['move_learn_method']['name'] == type) {
+        if(type == 'level-up') {
+          moves[movesUN[i]['move']['name']] = movesUN[i]['version_group_details'][versionGroupDetailsLength - 1]['level_learned_at'];
+        } else {
+          moves[movesUN[i]['move']['name']] = 0;
+        }
+      }
+    } 
+    // i want to organize the moves by level learned
+    moves = Map.fromEntries(moves.entries.toList()..sort((e1, e2) => e1.value.compareTo(e2.value)));
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {        
+        return AlertDialog(
+          backgroundColor: Theme.of(context).primaryColorLight,
+          title: Center(
+            child: Text(
+              "${makePretty(type)} Moves",
+              style: TextStyle(
+                fontSize: 30,
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).primaryColor,
+              ),
+            ),
+          ),
+          content: SizedBox(
+            height: MediaQuery.of(context).size.height / 2,
+            width: MediaQuery.of(context).size.width / 2,
+            child: ListView.builder(
+              itemCount: moves.length,
+              itemBuilder: (context, index) {                
+                return Card(
+                  color: Theme.of(context).secondaryHeaderColor,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: GestureDetector(
+                      onTap: () => moveDescripPopup(context, moves.keys.elementAt(index)),
+                      child: Text(
+                        type == 'level-up' ? '${makePretty(moves.keys.elementAt(index))} - Lvl ${moves.values.elementAt(index)}' :
+                        makePretty(moves.keys.elementAt(index)),
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
+    
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: SizedBox(
+        height: MediaQuery.of(context).size.height / 9,
+        width: MediaQuery.of(context).size.width,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [                        
+            Text(
+              'Moves',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).primaryColor,
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Flexible(
+                  // lvl up
+                  child: GestureDetector(
+                    onTap: () => movesPopUp(context, moves, 'level-up'),
+                    child: Card(
+                      color: Theme.of(context).secondaryHeaderColor,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          'Lvl Up',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(width: MediaQuery.of(context).size.width / 40),
+                Flexible(
+                  // tm
+                  child: GestureDetector(
+                    onTap: () => movesPopUp(context, moves, 'machine'),
+                    child: Card(
+                      color: Theme.of(context).secondaryHeaderColor,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          'TM/HM',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(width: MediaQuery.of(context).size.width / 40),
+                Flexible(
+                  // tutor
+                  child: GestureDetector(
+                    onTap: () => movesPopUp(context, moves, 'tutor'),
+                    child: Card(
+                      color: Theme.of(context).secondaryHeaderColor,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          'Tutor',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(width: MediaQuery.of(context).size.width / 40),
+                Flexible(
+                  // egg
+                  child: GestureDetector(
+                    onTap: () => movesPopUp(context, moves, 'egg'),
+                    child: Card(
+                      color: Theme.of(context).secondaryHeaderColor,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          'Egg',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
