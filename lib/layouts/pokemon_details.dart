@@ -601,8 +601,14 @@ class MovesDisplay extends StatelessWidget {
             future: fetchMove(move),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
+                int lengthOfScreen = 0;
+                if (snapshot.data!.description.length > 40) {
+                  lengthOfScreen = 5;
+                } else {
+                  lengthOfScreen = 8;
+                }
                 return SizedBox(
-                  height: MediaQuery.of(context).size.height / 8,
+                  height: MediaQuery.of(context).size.height / lengthOfScreen,
                   width: MediaQuery.of(context).size.width,
                   child: Column(
                     children: [
@@ -619,8 +625,8 @@ class MovesDisplay extends StatelessWidget {
                               ),
                               SvgPicture.asset(
                                 'assets/images/attack_type/${snapshot.data!.damageClass}.svg',
-                                height: MediaQuery.of(context).size.height / 30,
-                                width: MediaQuery.of(context).size.width / 30,
+                                height: MediaQuery.of(context).size.height / 40,
+                                width: MediaQuery.of(context).size.width / 40,
                               ),
                             ],
                           ),
@@ -629,8 +635,8 @@ class MovesDisplay extends StatelessWidget {
                             child: Text(
                               makePretty(snapshot.data!.description),
                               style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
                                 color: Theme.of(context).primaryColor,
                               ),
                             ),
@@ -645,26 +651,28 @@ class MovesDisplay extends StatelessWidget {
                             snapshot.data!.power == 0 ? 'Power: -' :
                             'Power: ${snapshot.data!.power}',
                             style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
+                              fontSize: 13,
+                              fontWeight: FontWeight.w300,
                               color: Theme.of(context).primaryColor,
                             ),
                           ),
+                          SizedBox(width: MediaQuery.of(context).size.width / 40),
                           Text(
-                            snapshot.data!.accuracy == 0 ? 'Accuracy: -' :
-                            'Accuracy: ${snapshot.data!.accuracy}',
+                            snapshot.data!.accuracy == 0 ? 'Acc: -' :
+                            'Acc: ${snapshot.data!.accuracy}',
                             style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
+                              fontSize: 13,
+                              fontWeight: FontWeight.w300,
                               color: Theme.of(context).primaryColor,
                             ),
                           ),
+                          SizedBox(width: MediaQuery.of(context).size.width / 40),
                           Text(
                             snapshot.data!.pp == 0 ? 'PP: -' :
                             'PP: ${snapshot.data!.pp}',
                             style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
+                              fontSize: 13,
+                              fontWeight: FontWeight.w300,
                               color: Theme.of(context).primaryColor,
                             ),
                           ),
@@ -770,7 +778,7 @@ class MovesDisplay extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: SizedBox(
-        height: MediaQuery.of(context).size.height / 9,
+        height: MediaQuery.of(context).size.height / 7,
         width: MediaQuery.of(context).size.width,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -797,7 +805,7 @@ class MovesDisplay extends StatelessWidget {
                         child: Text(
                           'Lvl Up',
                           style: TextStyle(
-                            fontSize: 18,
+                            fontSize: 14,
                             fontWeight: FontWeight.bold,
                             color: Theme.of(context).primaryColor,
                           ),
@@ -818,7 +826,7 @@ class MovesDisplay extends StatelessWidget {
                         child: Text(
                           'TM/HM',
                           style: TextStyle(
-                            fontSize: 18,
+                            fontSize: 14,
                             fontWeight: FontWeight.bold,
                             color: Theme.of(context).primaryColor,
                           ),
@@ -839,7 +847,7 @@ class MovesDisplay extends StatelessWidget {
                         child: Text(
                           'Tutor',
                           style: TextStyle(
-                            fontSize: 18,
+                            fontSize: 16,
                             fontWeight: FontWeight.bold,
                             color: Theme.of(context).primaryColor,
                           ),
