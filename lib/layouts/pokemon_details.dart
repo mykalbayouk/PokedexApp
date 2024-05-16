@@ -11,6 +11,7 @@ import 'package:pokedex/PokeObjects/pokemon.dart';
 import 'package:pokedex/Utilities/CustomWidgets/abilities_list.dart';
 import 'package:pokedex/Utilities/CustomWidgets/custom_progress.dart';
 import 'package:pokedex/Utilities/CustomWidgets/custom_text.dart';
+import 'package:pokedex/Utilities/CustomWidgets/pokedex_popup.dart';
 import 'package:pokedex/Utilities/CustomWidgets/type_matchups.dart';
 import 'package:pokedex/Utilities/Functions/api.dart';
 import 'package:pokedex/Utilities/Functions/dex_type.dart';
@@ -164,7 +165,7 @@ class _PokeDetailsState extends State<PokeDetails> {
                       ),
                       TextButton(
                         onPressed: () => {
-                          print("test"),
+                          pokedexPopUp(context, getDexType(widget.snapshot.data!.id)),
                         },
                         child: Text(
                           getDexType(widget.snapshot.data!.id),
@@ -373,6 +374,7 @@ class EvolutionDisplay extends StatelessWidget {
                 return Card(
                   child: SizedBox(
                     height: MediaQuery.of(context).size.height / 8,
+                    width: MediaQuery.of(context).size.width,
                     child: EvoImage(id, snapshot.data!.chain.allEvolutions,
                         snapshot.data!.chain.allDetails),
                   ),
