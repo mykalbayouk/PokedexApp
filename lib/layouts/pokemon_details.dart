@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:http/http.dart' as http;
 import 'package:pokedex/PokeObjects/pokemon.dart';
 import 'package:pokedex/Utilities/CustomWidgets/abilities_list.dart';
 import 'package:pokedex/Utilities/CustomWidgets/custom_progress.dart';
@@ -21,6 +22,7 @@ import 'package:pokedex/Utilities/Functions/string_extension.dart';
 import 'package:pokedex/layouts/pokemon_main.dart';
 import 'package:pokedex/pokeobjects/evo_details.dart';
 import 'package:pokedex/pokeobjects/get_chain.dart';
+import 'package:pokedex/pokeobjects/location.dart';
 import 'package:pokedex/pokeobjects/move.dart';
 import 'package:pokedex/pokeobjects/species.dart';
 import 'package:provider/provider.dart';
@@ -54,14 +56,14 @@ class PokeDetails extends StatefulWidget {
   State<PokeDetails> createState() => _PokeDetailsState();
 }
 
-class _PokeDetailsState extends State<PokeDetails> {  
-
+class _PokeDetailsState extends State<PokeDetails> {
   void pokelist() async {
     String data = await loadAsset('assets/raw/poke_list.txt');
     setState(() {
       pokeList = data.split('\n');
     });
   }
+
   @override
   void initState() {
     super.initState();
@@ -165,7 +167,8 @@ class _PokeDetailsState extends State<PokeDetails> {
                       ),
                       TextButton(
                         onPressed: () => {
-                          pokedexPopUp(context, getDexType(widget.snapshot.data!.id)),
+                          pokedexPopUp(
+                              context, getDexType(widget.snapshot.data!.id)),
                         },
                         child: Text(
                           getDexType(widget.snapshot.data!.id),
@@ -184,6 +187,7 @@ class _PokeDetailsState extends State<PokeDetails> {
               AbilitiesList(widget.snapshot.data!.abilities),
               EvolutionDisplay(id: widget.snapshot.data!.id.toString()),
               MovesDisplay(widget.snapshot.data!.moves),
+              LocationDisplay(widget.snapshot.data!.id),
             ],
           ),
         ),
@@ -248,7 +252,8 @@ FutureBuilder<Species> speciesBuilder(String id, int height, int weight) {
       } else if (snapshot.hasError) {
         return Text('${snapshot.error}');
       }
-      return customProgressIndicator(context, Theme.of(context).primaryColorLight);   
+      return customProgressIndicator(
+          context, Theme.of(context).primaryColorLight);
     },
   );
 }
@@ -382,13 +387,13 @@ class EvolutionDisplay extends StatelessWidget {
               } else if (snapshot.hasError) {
                 return Text('Error: ${snapshot.error}');
               }
-              return customProgressIndicator(context, Colors.white);   
+              return customProgressIndicator(context, Colors.white);
             },
           );
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         }
-        return customProgressIndicator(context, Colors.white);   
+        return customProgressIndicator(context, Colors.white);
       },
     );
   }
@@ -398,7 +403,8 @@ class EvoImage extends StatelessWidget {
   final String currentId;
   final List<String> allEvolutions;
   final List<EvoDetails> evoDetails;
-  const EvoImage(this.currentId, this.allEvolutions, this.evoDetails, {super.key});
+  const EvoImage(this.currentId, this.allEvolutions, this.evoDetails,
+      {super.key});
 
   String evoDetailAttr(EvoDetails evoDetails) {
     if (evoDetails.trigger == 'level-up') {
@@ -433,7 +439,7 @@ class EvoImage extends StatelessWidget {
           } else if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           }
-          return customProgressIndicator(context, Colors.white);   
+          return customProgressIndicator(context, Colors.white);
         },
       );
     } else if (allEvolutions.length == 2) {
@@ -446,7 +452,8 @@ class EvoImage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   GestureDetector(
-                    onTap: () => selectedMon(context, allEvolutions[0], currentId),
+                    onTap: () =>
+                        selectedMon(context, allEvolutions[0], currentId),
                     child: Image(
                       image: snapshot.data![0].image,
                     ),
@@ -472,7 +479,8 @@ class EvoImage extends StatelessWidget {
                     ],
                   ),
                   GestureDetector(
-                    onTap: () => selectedMon(context, allEvolutions[1], currentId),
+                    onTap: () =>
+                        selectedMon(context, allEvolutions[1], currentId),
                     child: Image(
                       image: snapshot.data![1].image,
                     ),
@@ -483,7 +491,7 @@ class EvoImage extends StatelessWidget {
           } else if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           }
-          return customProgressIndicator(context, Colors.white);   
+          return customProgressIndicator(context, Colors.white);
         },
       );
     } else if (allEvolutions.length == 3) {
@@ -496,7 +504,8 @@ class EvoImage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   GestureDetector(
-                    onTap: () => selectedMon(context, allEvolutions[0], currentId),
+                    onTap: () =>
+                        selectedMon(context, allEvolutions[0], currentId),
                     child: Image(
                       image: snapshot.data![0].image,
                     ),
@@ -522,7 +531,8 @@ class EvoImage extends StatelessWidget {
                     ),
                   ),
                   GestureDetector(
-                    onTap: () => selectedMon(context, allEvolutions[1], currentId),
+                    onTap: () =>
+                        selectedMon(context, allEvolutions[1], currentId),
                     child: Image(
                       image: snapshot.data![1].image,
                     ),
@@ -548,7 +558,8 @@ class EvoImage extends StatelessWidget {
                     ),
                   ),
                   GestureDetector(
-                    onTap: () => selectedMon(context, allEvolutions[2], currentId),
+                    onTap: () =>
+                        selectedMon(context, allEvolutions[2], currentId),
                     child: Image(
                       image: snapshot.data![2].image,
                     ),
@@ -559,7 +570,7 @@ class EvoImage extends StatelessWidget {
           } else if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           }
-          return customProgressIndicator(context, Colors.white);   
+          return customProgressIndicator(context, Colors.white);
         },
       );
     } else {
@@ -568,9 +579,9 @@ class EvoImage extends StatelessWidget {
   }
 }
 
-void selectedMon(BuildContext context, String id, String currentMon) {  
+void selectedMon(BuildContext context, String id, String currentMon) {
   String cMon = pokeList[int.parse(currentMon) - 1].split(',')[0];
-  if(id != cMon.toLowerCase()) {    
+  if (id != cMon.toLowerCase()) {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
@@ -582,13 +593,15 @@ void selectedMon(BuildContext context, String id, String currentMon) {
             } else if (snapshot.hasError) {
               return Text('Error: ${snapshot.error}');
             }
-            return customProgressIndicator(context, Theme.of(context).secondaryHeaderColor);         
+            return customProgressIndicator(
+                context, Theme.of(context).secondaryHeaderColor);
           },
         ),
       ),
     );
   }
 }
+
 Future<List<Image>> getImage(List<String> ids, double scale) async {
   List<Image> images = [];
   for (var id in ids) {
@@ -609,11 +622,11 @@ class MovesDisplay extends StatelessWidget {
   const MovesDisplay(this.moves, {super.key});
 
   Future<Move> fetchMove(String move) async {
-    final response = await getData('move', move);    
+    final response = await getData('move', move);
     return Move.fromJson(jsonDecode(response));
   }
 
-  moveDescripPopup(BuildContext context, String move) {    
+  moveDescripPopup(BuildContext context, String move) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -638,7 +651,7 @@ class MovesDisplay extends StatelessWidget {
                   lengthOfScreen = 5;
                 } else {
                   lengthOfScreen = 8;
-                }                
+                }
                 return SizedBox(
                   height: MediaQuery.of(context).size.height / lengthOfScreen,
                   width: MediaQuery.of(context).size.width,
@@ -662,9 +675,10 @@ class MovesDisplay extends StatelessWidget {
                               ),
                             ],
                           ),
-                          SizedBox(width: MediaQuery.of(context).size.width / 40),
+                          SizedBox(
+                              width: MediaQuery.of(context).size.width / 40),
                           Flexible(
-                            child: Text(                              
+                            child: Text(
                               snapshot.data!.description,
                               style: TextStyle(
                                 fontSize: 14,
@@ -680,44 +694,49 @@ class MovesDisplay extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           Text(
-                            snapshot.data!.power == 0 ? 'Power: -' :
-                            'Power: ${snapshot.data!.power}',
+                            snapshot.data!.power == 0
+                                ? 'Power: -'
+                                : 'Power: ${snapshot.data!.power}',
                             style: TextStyle(
                               fontSize: 13,
                               fontWeight: FontWeight.w300,
                               color: Theme.of(context).primaryColor,
                             ),
                           ),
-                          SizedBox(width: MediaQuery.of(context).size.width / 40),
+                          SizedBox(
+                              width: MediaQuery.of(context).size.width / 40),
                           Text(
-                            snapshot.data!.accuracy == 0 ? 'Acc: -' :
-                            'Acc: ${snapshot.data!.accuracy}',
+                            snapshot.data!.accuracy == 0
+                                ? 'Acc: -'
+                                : 'Acc: ${snapshot.data!.accuracy}',
                             style: TextStyle(
                               fontSize: 13,
                               fontWeight: FontWeight.w300,
                               color: Theme.of(context).primaryColor,
                             ),
                           ),
-                          SizedBox(width: MediaQuery.of(context).size.width / 40),
+                          SizedBox(
+                              width: MediaQuery.of(context).size.width / 40),
                           Text(
-                            snapshot.data!.pp == 0 ? 'PP: -' :
-                            'PP: ${snapshot.data!.pp}',
+                            snapshot.data!.pp == 0
+                                ? 'PP: -'
+                                : 'PP: ${snapshot.data!.pp}',
                             style: TextStyle(
                               fontSize: 13,
                               fontWeight: FontWeight.w300,
                               color: Theme.of(context).primaryColor,
                             ),
                           ),
-
                         ],
                       )
                     ],
                   ),
                 );
-              } else if (snapshot.hasError) {                
+              } else if (snapshot.hasError) {
                 return Text('Error: ${snapshot.error}');
               }
-              return customProgressIndicator(context, Theme.of(context).primaryColorLight);   
+              return customProgressIndicator(
+                  context, Theme.of(context).primaryColorLight);
             },
           ),
           actions: <Widget>[
@@ -733,26 +752,30 @@ class MovesDisplay extends StatelessWidget {
     );
   }
 
-
-
   // 0 - lvl up, 1 - tm, 2 - tutor, 3 - egg
-  movesPopUp(BuildContext context, List movesUN, String type) {     
-    Map<String, int>  moves = {};
+  movesPopUp(BuildContext context, List movesUN, String type) {
+    Map<String, int> moves = {};
     for (var i = 0; i < movesUN.length; i++) {
-      int versionGroupDetailsLength = movesUN[i]['version_group_details'].length;
-      if (movesUN[i]['version_group_details'][versionGroupDetailsLength - 1]['move_learn_method']['name'] == type) {
-        if(type == 'level-up') {
-          moves[movesUN[i]['move']['name']] = movesUN[i]['version_group_details'][versionGroupDetailsLength - 1]['level_learned_at'];
+      int versionGroupDetailsLength =
+          movesUN[i]['version_group_details'].length;
+      if (movesUN[i]['version_group_details'][versionGroupDetailsLength - 1]
+              ['move_learn_method']['name'] ==
+          type) {
+        if (type == 'level-up') {
+          moves[movesUN[i]['move']['name']] = movesUN[i]
+                  ['version_group_details'][versionGroupDetailsLength - 1]
+              ['level_learned_at'];
         } else {
           moves[movesUN[i]['move']['name']] = 0;
         }
       }
-    } 
+    }
     // i want to organize the moves by level learned
-    moves = Map.fromEntries(moves.entries.toList()..sort((e1, e2) => e1.value.compareTo(e2.value)));
+    moves = Map.fromEntries(
+        moves.entries.toList()..sort((e1, e2) => e1.value.compareTo(e2.value)));
     showDialog(
       context: context,
-      builder: (BuildContext context) {        
+      builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: Theme.of(context).primaryColorLight,
           title: Center(
@@ -770,16 +793,18 @@ class MovesDisplay extends StatelessWidget {
             width: MediaQuery.of(context).size.width / 2,
             child: ListView.builder(
               itemCount: moves.length,
-              itemBuilder: (context, index) {                
+              itemBuilder: (context, index) {
                 return Card(
                   color: Theme.of(context).secondaryHeaderColor,
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: GestureDetector(
-                      onTap: () => moveDescripPopup(context, moves.keys.elementAt(index)),
+                      onTap: () => moveDescripPopup(
+                          context, moves.keys.elementAt(index)),
                       child: Text(
-                        type == 'level-up' ? '${makePretty(moves.keys.elementAt(index))} - Lvl ${moves.values.elementAt(index)}' :
-                        makePretty(moves.keys.elementAt(index)),
+                        type == 'level-up'
+                            ? '${makePretty(moves.keys.elementAt(index))} - Lvl ${moves.values.elementAt(index)}'
+                            : makePretty(moves.keys.elementAt(index)),
                         style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.bold,
@@ -803,7 +828,6 @@ class MovesDisplay extends StatelessWidget {
         );
       },
     );
-    
   }
 
   @override
@@ -814,7 +838,7 @@ class MovesDisplay extends StatelessWidget {
         width: MediaQuery.of(context).size.width,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [                        
+          children: [
             Text(
               'Moves',
               style: TextStyle(
@@ -912,6 +936,184 @@ class MovesDisplay extends StatelessWidget {
               ],
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class LocationDisplay extends StatelessWidget {
+  final int id;
+  const LocationDisplay(this.id, {super.key});
+
+  Future locationGetData(String type, int describer) async {
+    Uri url =
+        Uri.parse('https://pokeapi.co/api/v2/$type/$describer/encounters');
+    http.Response response = await http.get(url);
+    if (response.statusCode == 200) {
+      return response.body;
+    } else {
+      throw Exception('Failed to load posts');
+    }
+  }
+
+  Future<List<Location>> fetchLocation(int id) async {
+    final response = await locationGetData('pokemon', id);
+    List<Location> locations = [];
+    var data = jsonDecode(response);
+    for (var i = 0; i < data.length; i++) {         
+      locations.add(Location.fromJson(data[i]));        
+    }        
+    return locations;
+  }
+
+  void locationPopUp(BuildContext context){
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Theme.of(context).primaryColorLight,
+          title: Center(
+            child: Text(
+              "Locations",
+              style: TextStyle(
+                fontSize: 30,
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).primaryColor,
+              ),
+            ),
+          ),
+          content: FutureBuilder<List<Location>>(
+            future: fetchLocation(id),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return SizedBox(
+                  height: MediaQuery.of(context).size.height / 2,
+                  width: MediaQuery.of(context).size.width / 2,
+                  child: ListView.builder(
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (context, index) {
+                      return Card(
+                        color: Theme.of(context).secondaryHeaderColor,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: GestureDetector(
+                            onTap: () => {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    backgroundColor: Theme.of(context).primaryColorLight,
+                                    title: Center(
+                                      child: Text(
+                                        snapshot.data![index].name.capitalize(),
+                                        style: TextStyle(
+                                          fontSize: 30,
+                                          fontWeight: FontWeight.bold,
+                                          color: Theme.of(context).primaryColor,
+                                        ),
+                                      ),
+                                    ),
+                                    content: SizedBox(
+                                      height: MediaQuery.of(context).size.height / 2,
+                                      width: MediaQuery.of(context).size.width / 2,
+                                      child: ListView.builder(
+                                        itemCount: snapshot.data![index].versions.length,
+                                        itemBuilder: (context, index2) {
+                                          return Card(
+                                            color: Theme.of(context).secondaryHeaderColor,
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(8.0),
+                                              child: Column(
+                                                children: [
+                                                  Text(
+                                                    snapshot.data![index].versions[index2].game,
+                                                    style: TextStyle(
+                                                      fontSize: 15,
+                                                      fontWeight: FontWeight.bold,
+                                                      color: Theme.of(context).primaryColor,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    snapshot.data![index].versions[index2].method,
+                                                    style: TextStyle(
+                                                      fontSize: 10,
+                                                      fontWeight: FontWeight.bold,
+                                                      color: Theme.of(context).primaryColor,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: const Text('Close'),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              ),
+                            },
+                            child: Text(
+                              snapshot.data![index].name.capitalize(),
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                                color: Theme.of(context).primaryColor,
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                );
+              } else if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              }
+              return customProgressIndicator(
+                  context, Theme.of(context).primaryColorLight);
+            },
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
+
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: SizedBox(
+        height: MediaQuery.of(context).size.height / 16,
+        width: MediaQuery.of(context).size.width,
+        child: Center(
+          child: GestureDetector(
+            onTap: () => locationPopUp(context),
+            child: Text(
+              'Locations',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).primaryColor,
+              ),
+            ),
+          ),
         ),
       ),
     );
