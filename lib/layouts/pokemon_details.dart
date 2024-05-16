@@ -187,7 +187,7 @@ class _PokeDetailsState extends State<PokeDetails> {
               AbilitiesList(widget.snapshot.data!.abilities),
               EvolutionDisplay(id: widget.snapshot.data!.id.toString()),
               MovesDisplay(widget.snapshot.data!.moves),
-              LocationDisplay(widget.snapshot.data!.id),
+              LocationDisplay(widget.snapshot.data!.id),              
             ],
           ),
         ),
@@ -985,8 +985,18 @@ class LocationDisplay extends StatelessWidget {
           ),
           content: FutureBuilder<List<Location>>(
             future: fetchLocation(id),
-            builder: (context, snapshot) {
+            builder: (context, snapshot) {              
               if (snapshot.hasData) {
+                if (snapshot.data!.isEmpty) {
+                  return Text(
+                    'Only found by Evolving',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w300,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  );
+                }
                 return SizedBox(
                   height: MediaQuery.of(context).size.height / 2,
                   width: MediaQuery.of(context).size.width / 2,
