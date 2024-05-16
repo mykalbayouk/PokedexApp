@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pokedex/layouts/pokemon_main.dart';
 
 class Pokemon {
   final String name;

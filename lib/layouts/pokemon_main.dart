@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:pokedex/PokeObjects/pokemon.dart';
+import 'package:pokedex/Utilities/CustomWidgets/custom_progress.dart';
 import 'package:pokedex/Utilities/Functions/dex_type.dart';
 import 'package:pokedex/Utilities/CustomWidgets/pokeimage.dart';
 import 'package:pokedex/Utilities/Functions/read_txt_file.dart';
@@ -81,7 +82,7 @@ FutureBuilder<Pokemon> setupPokemon(
               PokeImage(snapshot.data!.image, 1),
               ElevatedButton(
                 style: ButtonStyle(
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(11.0),
                     ),
@@ -114,7 +115,7 @@ FutureBuilder<Pokemon> setupPokemon(
       } else if (snapshot.hasError) {
         return Text('${snapshot.error}');
       }
-      return const CircularProgressIndicator();
+      return customProgressIndicator(context, Theme.of(context).secondaryHeaderColor);   
     },
   );
 }

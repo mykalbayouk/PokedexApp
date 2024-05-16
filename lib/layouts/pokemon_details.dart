@@ -9,12 +9,15 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokedex/PokeObjects/pokemon.dart';
 import 'package:pokedex/Utilities/CustomWidgets/abilities_list.dart';
+import 'package:pokedex/Utilities/CustomWidgets/custom_progress.dart';
 import 'package:pokedex/Utilities/CustomWidgets/custom_text.dart';
 import 'package:pokedex/Utilities/CustomWidgets/type_matchups.dart';
 import 'package:pokedex/Utilities/Functions/api.dart';
 import 'package:pokedex/Utilities/Functions/dex_type.dart';
 import 'package:pokedex/Utilities/CustomWidgets/pokeimage.dart';
+import 'package:pokedex/Utilities/Functions/read_txt_file.dart';
 import 'package:pokedex/Utilities/Functions/string_extension.dart';
+import 'package:pokedex/layouts/pokemon_main.dart';
 import 'package:pokedex/pokeobjects/evo_details.dart';
 import 'package:pokedex/pokeobjects/get_chain.dart';
 import 'package:pokedex/pokeobjects/move.dart';
@@ -22,6 +25,7 @@ import 'package:pokedex/pokeobjects/species.dart';
 import 'package:provider/provider.dart';
 
 bool isPressed = false;
+List<String> pokeList = [];
 
 class DetailAppState extends ChangeNotifier {
   void changePressed() {
@@ -49,10 +53,18 @@ class PokeDetails extends StatefulWidget {
   State<PokeDetails> createState() => _PokeDetailsState();
 }
 
-class _PokeDetailsState extends State<PokeDetails> {
+class _PokeDetailsState extends State<PokeDetails> {  
+
+  void pokelist() async {
+    String data = await loadAsset('assets/raw/poke_list.txt');
+    setState(() {
+      pokeList = data.split('\n');
+    });
+  }
   @override
   void initState() {
     super.initState();
+    pokelist();
     isPressed = false;
   }
 
@@ -235,7 +247,7 @@ FutureBuilder<Species> speciesBuilder(String id, int height, int weight) {
       } else if (snapshot.hasError) {
         return Text('${snapshot.error}');
       }
-      return const CircularProgressIndicator();
+      return customProgressIndicator(context, Theme.of(context).primaryColorLight);   
     },
   );
 }
@@ -361,29 +373,30 @@ class EvolutionDisplay extends StatelessWidget {
                 return Card(
                   child: SizedBox(
                     height: MediaQuery.of(context).size.height / 8,
-                    child: EvoImage(snapshot.data!.chain.allEvolutions,
+                    child: EvoImage(id, snapshot.data!.chain.allEvolutions,
                         snapshot.data!.chain.allDetails),
                   ),
                 );
               } else if (snapshot.hasError) {
                 return Text('Error: ${snapshot.error}');
               }
-              return const CircularProgressIndicator();
+              return customProgressIndicator(context, Colors.white);   
             },
           );
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         }
-        return const CircularProgressIndicator();
+        return customProgressIndicator(context, Colors.white);   
       },
     );
   }
 }
 
 class EvoImage extends StatelessWidget {
+  final String currentId;
   final List<String> allEvolutions;
   final List<EvoDetails> evoDetails;
-  const EvoImage(this.allEvolutions, this.evoDetails, {super.key});
+  const EvoImage(this.currentId, this.allEvolutions, this.evoDetails, {super.key});
 
   String evoDetailAttr(EvoDetails evoDetails) {
     if (evoDetails.trigger == 'level-up') {
@@ -418,7 +431,7 @@ class EvoImage extends StatelessWidget {
           } else if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           }
-          return const CircularProgressIndicator();
+          return customProgressIndicator(context, Colors.white);   
         },
       );
     } else if (allEvolutions.length == 2) {
@@ -431,7 +444,7 @@ class EvoImage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   GestureDetector(
-                    onTap: () => selectedMon(context, allEvolutions[0]),
+                    onTap: () => selectedMon(context, allEvolutions[0], currentId),
                     child: Image(
                       image: snapshot.data![0].image,
                     ),
@@ -457,7 +470,7 @@ class EvoImage extends StatelessWidget {
                     ],
                   ),
                   GestureDetector(
-                    onTap: () => selectedMon(context, allEvolutions[1]),
+                    onTap: () => selectedMon(context, allEvolutions[1], currentId),
                     child: Image(
                       image: snapshot.data![1].image,
                     ),
@@ -468,7 +481,7 @@ class EvoImage extends StatelessWidget {
           } else if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           }
-          return const CircularProgressIndicator();
+          return customProgressIndicator(context, Colors.white);   
         },
       );
     } else if (allEvolutions.length == 3) {
@@ -481,7 +494,7 @@ class EvoImage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   GestureDetector(
-                    onTap: () => selectedMon(context, allEvolutions[0]),
+                    onTap: () => selectedMon(context, allEvolutions[0], currentId),
                     child: Image(
                       image: snapshot.data![0].image,
                     ),
@@ -507,7 +520,7 @@ class EvoImage extends StatelessWidget {
                     ),
                   ),
                   GestureDetector(
-                    onTap: () => selectedMon(context, allEvolutions[1]),
+                    onTap: () => selectedMon(context, allEvolutions[1], currentId),
                     child: Image(
                       image: snapshot.data![1].image,
                     ),
@@ -533,7 +546,7 @@ class EvoImage extends StatelessWidget {
                     ),
                   ),
                   GestureDetector(
-                    onTap: () => selectedMon(context, allEvolutions[2]),
+                    onTap: () => selectedMon(context, allEvolutions[2], currentId),
                     child: Image(
                       image: snapshot.data![2].image,
                     ),
@@ -544,19 +557,36 @@ class EvoImage extends StatelessWidget {
           } else if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           }
-          return const CircularProgressIndicator();
+          return customProgressIndicator(context, Colors.white);   
         },
       );
     } else {
-      return Text("poop");
+      return Text("TBC");
     }
   }
 }
 
-void selectedMon(BuildContext context, String id) {
-  print(id);
+void selectedMon(BuildContext context, String id, String currentMon) {  
+  String cMon = pokeList[int.parse(currentMon) - 1].split(',')[0];
+  if(id != cMon.toLowerCase()) {    
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => FutureBuilder<Pokemon>(
+          future: fetchPokemonName(id),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return PokeDetails(snapshot: snapshot);
+            } else if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            }
+            return customProgressIndicator(context, Theme.of(context).secondaryHeaderColor);         
+          },
+        ),
+      ),
+    );
+  }
 }
-
 Future<List<Image>> getImage(List<String> ids, double scale) async {
   List<Image> images = [];
   for (var id in ids) {
@@ -606,7 +636,7 @@ class MovesDisplay extends StatelessWidget {
                   lengthOfScreen = 5;
                 } else {
                   lengthOfScreen = 8;
-                }
+                }                
                 return SizedBox(
                   height: MediaQuery.of(context).size.height / lengthOfScreen,
                   width: MediaQuery.of(context).size.width,
@@ -632,8 +662,8 @@ class MovesDisplay extends StatelessWidget {
                           ),
                           SizedBox(width: MediaQuery.of(context).size.width / 40),
                           Flexible(
-                            child: Text(
-                              makePretty(snapshot.data!.description),
+                            child: Text(                              
+                              snapshot.data!.description,
                               style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,
@@ -685,7 +715,7 @@ class MovesDisplay extends StatelessWidget {
               } else if (snapshot.hasError) {                
                 return Text('Error: ${snapshot.error}');
               }
-              return const CircularProgressIndicator();
+              return customProgressIndicator(context, Theme.of(context).primaryColorLight);   
             },
           ),
           actions: <Widget>[

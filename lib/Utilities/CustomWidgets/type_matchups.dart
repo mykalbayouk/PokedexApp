@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:pokedex/Utilities/CustomWidgets/custom_progress.dart';
 import 'package:pokedex/Utilities/Functions/api.dart';
 import 'package:pokedex/Utilities/Functions/type_color.dart';
 import 'package:pokedex/pokeobjects/type.dart';
@@ -223,7 +224,7 @@ class TypeMatchups extends StatelessWidget {
           print(snapshot.error);
           return Text('Error: ${snapshot.error}');
         }
-        return const CircularProgressIndicator();
+        return customProgressIndicator(context, Theme.of(context).primaryColorLight);   
       },
     );
   }

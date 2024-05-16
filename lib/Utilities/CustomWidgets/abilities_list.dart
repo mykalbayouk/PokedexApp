@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:pokedex/Utilities/CustomWidgets/custom_progress.dart';
 import 'package:pokedex/Utilities/CustomWidgets/custom_text.dart';
 import 'package:pokedex/Utilities/Functions/api.dart';
 import 'package:pokedex/Utilities/Functions/string_extension.dart';
@@ -45,7 +46,7 @@ class AbilitiesList extends StatelessWidget {
               } else if (snapshot.hasError) {
                 return Text('Error: ${snapshot.error}');
               }
-              return const CircularProgressIndicator();
+              return customProgressIndicator(context, Theme.of(context).secondaryHeaderColor);   
             },
           ),
           actions: [
