@@ -21,9 +21,12 @@ class MainApp extends StatelessWidget {
           title: 'Pokedex App',
           theme: ThemeData(
             useMaterial3: true,
-            colorScheme: ColorScheme.fromSwatch(
-              primarySwatch: Colors.red,
-            ),
+            primaryColor: const Color.fromARGB(255, 159, 0, 0),
+            secondaryHeaderColor: const Color.fromARGB(255, 255, 255, 255),
+            primaryColorLight: const Color.fromARGB(255, 212, 212, 212),
+            cardColor: const Color.fromARGB(255, 199, 199, 199),
+            primaryColorDark: const Color.fromARGB(255, 82, 0, 0),
+
           ),
           home: const PokemonMain(),
         );
