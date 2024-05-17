@@ -25,6 +25,7 @@ import 'package:pokedex/pokeobjects/get_chain.dart';
 import 'package:pokedex/pokeobjects/location.dart';
 import 'package:pokedex/pokeobjects/move.dart';
 import 'package:pokedex/pokeobjects/species.dart';
+import 'package:pokedex/pokeobjects/versions.dart';
 import 'package:provider/provider.dart';
 
 bool isPressed = false;
@@ -187,7 +188,16 @@ class _PokeDetailsState extends State<PokeDetails> {
               AbilitiesList(widget.snapshot.data!.abilities),
               EvolutionDisplay(id: widget.snapshot.data!.id.toString()),
               MovesDisplay(widget.snapshot.data!.moves),
-              LocationDisplay(widget.snapshot.data!.id),              
+              LocationDisplay(widget.snapshot.data!.id), 
+              SizedBox(height: MediaQuery.of(context).size.height / 40),     
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  FavoritesDisplay(widget.snapshot.data!.id),
+                  SizedBox(width: MediaQuery.of(context).size.width / 25),
+                  TeamDisplay(widget.snapshot.data!.id),
+                ],
+              ),       
             ],
           ),
         ),
@@ -331,7 +341,7 @@ class PokeType extends StatelessWidget {
                 color: Theme.of(context).primaryColor,
               ),
             ),
-            SizedBox(width: MediaQuery.of(context).size.width / 2.5),
+            SizedBox(width: MediaQuery.of(context).size.width / 3),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
@@ -998,8 +1008,8 @@ class LocationDisplay extends StatelessWidget {
                   );
                 }
                 return SizedBox(
-                  height: MediaQuery.of(context).size.height / 2,
-                  width: MediaQuery.of(context).size.width / 2,
+                  height: MediaQuery.of(context).size.height / 6,
+                  width: MediaQuery.of(context).size.width,
                   child: ListView.builder(
                     itemCount: snapshot.data!.length,
                     itemBuilder: (context, index) {
@@ -1007,78 +1017,30 @@ class LocationDisplay extends StatelessWidget {
                         color: Theme.of(context).secondaryHeaderColor,
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: GestureDetector(
-                            onTap: () => {
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    backgroundColor: Theme.of(context).primaryColorLight,
-                                    title: Center(
-                                      child: Text(
-                                        snapshot.data![index].name.capitalize(),
-                                        style: TextStyle(
-                                          fontSize: 30,
-                                          fontWeight: FontWeight.bold,
-                                          color: Theme.of(context).primaryColor,
-                                        ),
-                                      ),
-                                    ),
-                                    content: SizedBox(
-                                      height: MediaQuery.of(context).size.height / 2,
-                                      width: MediaQuery.of(context).size.width / 2,
-                                      child: ListView.builder(
-                                        itemCount: snapshot.data![index].versions.length,
-                                        itemBuilder: (context, index2) {
-                                          return Card(
-                                            color: Theme.of(context).secondaryHeaderColor,
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(8.0),
-                                              child: Column(
-                                                children: [
-                                                  Text(
-                                                    snapshot.data![index].versions[index2].game,
-                                                    style: TextStyle(
-                                                      fontSize: 15,
-                                                      fontWeight: FontWeight.bold,
-                                                      color: Theme.of(context).primaryColor,
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    snapshot.data![index].versions[index2].method,
-                                                    style: TextStyle(
-                                                      fontSize: 10,
-                                                      fontWeight: FontWeight.bold,
-                                                      color: Theme.of(context).primaryColor,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                    actions: <Widget>[
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                        child: const Text('Close'),
-                                      ),
-                                    ],
-                                  );
-                                },
+                          child: Row(                            
+                            children: [
+                              Flexible(
+                                child: Text(
+                                  listGames(snapshot.data![index].versions),
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                    color: Theme.of(context).primaryColor,
+                                  ),
+                                ),
                               ),
-                            },
-                            child: Text(
-                              snapshot.data![index].name.capitalize(),
-                              style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
-                                color: Theme.of(context).primaryColor,
+                              const Spacer(),
+                              Flexible(
+                                child: Text(
+                                  makePretty(snapshot.data![index].name),
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w300,
+                                    color: Theme.of(context).primaryColor,
+                                  ),
+                                ),
                               ),
-                            ),
+                            ],
                           ),
                         ),
                       );
@@ -1106,15 +1068,26 @@ class LocationDisplay extends StatelessWidget {
 
   }
 
+  String listGames(List<Versions> versions) {
+    String games = '';
+    for (var i = 0; i < versions.length; i++) {
+      games += makePretty(versions[i].game);
+      if(i != versions.length - 1){
+        games += '/';
+      }
+    }
+    return games;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: SizedBox(
-        height: MediaQuery.of(context).size.height / 16,
-        width: MediaQuery.of(context).size.width,
-        child: Center(
-          child: GestureDetector(
-            onTap: () => locationPopUp(context),
+    return GestureDetector(
+      onTap: () => locationPopUp(context),
+      child: Card(
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height / 16,
+          width: MediaQuery.of(context).size.width,
+          child: Center(
             child: Text(
               'Locations',
               style: TextStyle(
@@ -1123,6 +1096,66 @@ class LocationDisplay extends StatelessWidget {
                 color: Theme.of(context).primaryColor,
               ),
             ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class FavoritesDisplay extends StatelessWidget {
+  final int id;
+  const FavoritesDisplay(this.id, {super.key});
+
+  @override
+  Widget build(BuildContext context){
+    // just keep it simple for now
+    return GestureDetector(
+      onTap: () => {
+        print('Favorites Display'),
+      },
+      child: Card(
+        color: Theme.of(context).primaryColor,
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height / 16,
+          width: MediaQuery.of(context).size.width / 4,
+          child: Center(
+            child: Icon(
+                Icons.favorite,
+                color: Theme.of(context).secondaryHeaderColor,
+              ),            
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class TeamDisplay extends StatelessWidget {
+  final int id;
+  const TeamDisplay(this.id, {super.key});
+
+  @override
+  Widget build(BuildContext context){
+    // just keep it simple for now
+    return GestureDetector(
+      onTap: () => {
+        print('Team Display'),
+      },
+      child: Card(
+        color: Theme.of(context).primaryColorDark,
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height / 16,
+          width: MediaQuery.of(context).size.width / 2,
+          child: Center(
+            child: Text(
+              'Add to Team',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).secondaryHeaderColor,
+              ),
+            ),        
           ),
         ),
       ),

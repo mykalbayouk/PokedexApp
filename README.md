@@ -33,5 +33,6 @@
 
 // BUGS
 - [ ] on actual device, when you search pokemon, list does not move (need to figure out proper fix to jank fix)
-
+- [ ] need to fix some evolutions that have more than 3 pokemon (eevee, etc)
+ 
 
