@@ -312,13 +312,13 @@ class PokeType extends StatelessWidget {
                         ),
                       ),
                       content: SizedBox(
-                        height: MediaQuery.of(context).size.height / 18,
+                        height: MediaQuery.of(context).size.height / 20,
                         width: MediaQuery.of(context).size.width / 1.5,
                         child: Text(
                           "Border means it is a quadruple type.\nSo either .25x or 4x damage depending on section.",
                           style: TextStyle(
-                            fontSize: 10,
-                            fontWeight: FontWeight.w500,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w300,
                             color: Theme.of(context).primaryColor,
                           ),
                           textAlign: TextAlign.center,
@@ -982,6 +982,7 @@ class LocationDisplay extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          contentPadding: const EdgeInsets.all(6.0),           
           backgroundColor: Theme.of(context).primaryColorLight,
           title: Center(
             child: Text(
@@ -1008,7 +1009,7 @@ class LocationDisplay extends StatelessWidget {
                   );
                 }
                 return SizedBox(
-                  height: MediaQuery.of(context).size.height / 6,
+                  height: MediaQuery.of(context).size.height / 3,
                   width: MediaQuery.of(context).size.width,
                   child: ListView.builder(
                     itemCount: snapshot.data!.length,
@@ -1017,7 +1018,8 @@ class LocationDisplay extends StatelessWidget {
                         color: Theme.of(context).secondaryHeaderColor,
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Row(                            
+                          child: Row( 
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,                           
                             children: [
                               Flexible(
                                 child: Text(
@@ -1029,7 +1031,8 @@ class LocationDisplay extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              const Spacer(),
+                              // i want it so that the first text is on the left and the second is on the right
+
                               Flexible(
                                 child: Text(
                                   makePretty(snapshot.data![index].name),
