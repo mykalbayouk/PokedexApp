@@ -85,4 +85,5 @@ class DefaultFirebaseOptions {
     storageBucket: 'pokedexapp-b6006.appspot.com',
     measurementId: 'G-JJB8PSFY42',
   );
+
 }

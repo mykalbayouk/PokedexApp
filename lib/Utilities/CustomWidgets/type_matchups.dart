@@ -119,7 +119,7 @@ class TypeMatchups extends StatelessWidget {
           Map<String, bool> superType = {};
           organizeMatchups(snapshot.data!, matchups, superType);
           return SizedBox(
-            height: MediaQuery.of(context).size.height / 3,
+            height: MediaQuery.of(context).size.height / 3,            
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [                
@@ -196,26 +196,28 @@ class TypeMatchups extends StatelessWidget {
                   ],
                 ),
                 if (matchups['noDamageFrom']!.length > 0)
-                  Column(
-                    children: [
-                      Text(
-                        "0x",
-                        style: TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                          color: Theme.of(context).primaryColor,
+                  Flexible(
+                    child: Column(
+                      children: [
+                        Text(
+                          "0x",
+                          style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).primaryColor,
+                          ),
                         ),
-                      ),
-                      for (var i = 0; i < matchups['noDamageFrom']!.length; i++)
-                        Flexible(
-                          child: SvgPicture.asset(
-                              'assets/images/type_short_icons/${makePretty(matchups['noDamageFrom']![i])}.svg',
-                              height: MediaQuery.of(context).size.height / 10,
-                              width: MediaQuery.of(context).size.width / 10,
-                              color: chooseColor(
-                                  makePretty(matchups['noDamageFrom']![i]))),
-                        ),
-                    ],
+                        for (var i = 0; i < matchups['noDamageFrom']!.length; i++)
+                          Flexible(
+                            child: SvgPicture.asset(
+                                'assets/images/type_short_icons/${makePretty(matchups['noDamageFrom']![i])}.svg',
+                                height: MediaQuery.of(context).size.height / 10,
+                                width: MediaQuery.of(context).size.width / 10,
+                                color: chooseColor(
+                                    makePretty(matchups['noDamageFrom']![i]))),
+                          ),
+                      ],
+                    ),
                   ),
               ],
             ),

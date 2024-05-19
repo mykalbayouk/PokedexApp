@@ -86,9 +86,9 @@ FutureBuilder<Pokemon> setupPokemon(
                     RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(11.0),
                     ),
-                  ),                  
+                  ),
                 ),
-                onPressed: () {                  
+                onPressed: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -107,7 +107,7 @@ FutureBuilder<Pokemon> setupPokemon(
                   ),
                 ),
               ),
-              const SizedBox(height: 50),
+              SizedBox(height: MediaQuery.of(context).size.height / 30),
               PokeList(pokeList),
             ],
           ),
@@ -115,7 +115,8 @@ FutureBuilder<Pokemon> setupPokemon(
       } else if (snapshot.hasError) {
         return Text('${snapshot.error}');
       }
-      return customProgressIndicator(context, Theme.of(context).secondaryHeaderColor);   
+      return customProgressIndicator(
+          context, Theme.of(context).secondaryHeaderColor);
     },
   );
 }
@@ -258,13 +259,15 @@ class _PokemonMainState extends State<PokemonMain>
             ),
             TextButton(
               onPressed: () {
-                if (isName) {
-                  appstate.setName(myValue.toLowerCase());
-                } else {
-                  appstate.setId(int.parse(myValue));
-                }
-                appstate.setUpdated(true);
-                Navigator.of(context).pop();
+                setState(() {
+                  if (isName) {
+                    appstate.setName(myValue.toLowerCase());
+                  } else {
+                    appstate.setId(int.parse(myValue));
+                  }
+                  appstate.setUpdated(true);
+                  Navigator.of(context).pop();
+                });
               },
               child: Text(
                 'OK',
@@ -286,30 +289,41 @@ class _PokemonMainState extends State<PokemonMain>
     String name = appstate.name;
     bool isName = appstate.isName;
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      backgroundColor: Theme.of(context).primaryColorLight,
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).primaryColor,
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(3.0),
-          child: RotationTransition(
-            turns: Tween(begin: 0.0, end: 1.0).animate(_controller),
-            child: IconButton(
-              splashColor: Colors.transparent,
-              highlightColor: Colors.transparent,
-              icon: Image.asset(
-                'assets/images/Pokeball.png',
-                height: MediaQuery.of(context).size.height / 22,
-                width: MediaQuery.of(context).size.width,
-              ),
+      bottomNavigationBar: BottomAppBar(
+        height: MediaQuery.of(context).size.height / 17,
+        color: Theme.of(context).primaryColor,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            IconButton(
+              iconSize: 30,
+              icon: const Icon(Icons.groups_2),
+              color: Theme.of(context).primaryColorLight,
               onPressed: () {
-                _controller.forward(from: 0.0);
+                print("group");
+              },
+            ),
+            IconButton(
+              iconSize: 35,
+              icon: const Icon(Icons.search),
+              color: Theme.of(context).primaryColorLight,
+              onPressed: () {
                 showPokemonPopUp(context);
               },
             ),
-          ),
+            IconButton(
+              iconSize: 35,
+              icon: const Icon(Icons.settings),
+              color: Theme.of(context).primaryColorLight,
+              onPressed: () {
+                print("settings");
+              },
+            ),
+          ],
         ),
       ),
+      resizeToAvoidBottomInset: false,
+      backgroundColor: Theme.of(context).primaryColorLight,
       body: setupPokemon(id, name, isName, pokeList),
     );
   }
@@ -343,7 +357,6 @@ class DexType extends StatelessWidget {
 
 // ignore: must_be_immutable
 class PokeList extends StatelessWidget {
-  static int test = 0;
   final List<String> pokeListFull;
 
   PokeList(this.pokeListFull, {super.key});
@@ -363,26 +376,23 @@ class PokeList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    test++;
     ItemScrollController scrollController = ItemScrollController();
     ItemPositionsListener itemPositionsListener =
         ItemPositionsListener.create();
     var appstate = context.read<PokeAppState>();
     int id = appstate.id;
 
-    List<String> pokeList = parsePL();
+    List<String> pokeList = parsePL();    
 
-    // worlds most jank solution to a problem
-    if (test % 2 != 0 && appstate.updated == true) {
+    if (appstate.updated) {
       Future.delayed(Duration.zero, () {
         scrollController.scrollTo(
           index: id - 1,
           duration: const Duration(seconds: 1),
           curve: Curves.easeInOut,
-        );
-        appstate.setUpdated(false);
+        );        
       });
-    }    
+    }
 
     SizedBox typeIcon(String type, bool selected) {
       if (type == '') {
@@ -405,7 +415,7 @@ class PokeList extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),
       ),
-      child: Container(
+      child: Container(        
         padding: const EdgeInsets.all(10),
         width: MediaQuery.of(context).size.width / 1.25,
         height: MediaQuery.of(context).size.height / 4,

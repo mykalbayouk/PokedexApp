@@ -410,7 +410,7 @@ Rampardos,Rock,
 Shieldon,Rock,Steel
 Bastiodon,Rock,Steel
 Burmy,Bug,
-Wormadam,Bug,Grass
+Wormadam-plant,Bug,Grass
 Mothim,Bug,Flying
 Combee,Bug,Flying
 Vespiquen,Bug,Flying
@@ -666,7 +666,7 @@ Spewpa,Bug,
 Vivillon,Bug,Flying
 Litleo,Fire,Normal
 Pyroar,Fire,Normal
-Flabébé,Fairy,
+Flabebe,Fairy,
 Floette,Fairy,
 Florges,Fairy,
 Skiddo,Grass,
@@ -742,8 +742,8 @@ Oricorio,Fire,Flying
 Cutiefly,Bug,Fairy
 Ribombee,Bug,Fairy
 Rockruff,Rock,
-Lycanroc,Rock,
-Wishiwashi,Water,
+Lycanroc-Midday,Rock,
+Wishiwashi-solo,Water,
 Mareanie,Poison,Water
 Toxapex,Poison,Water
 Mudbray,Ground,

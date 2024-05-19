@@ -14,9 +14,11 @@ import 'package:pokedex/Utilities/CustomWidgets/custom_progress.dart';
 import 'package:pokedex/Utilities/CustomWidgets/custom_text.dart';
 import 'package:pokedex/Utilities/CustomWidgets/pokedex_popup.dart';
 import 'package:pokedex/Utilities/CustomWidgets/type_matchups.dart';
+import 'package:pokedex/Utilities/CustomWidgets/unique_evo_popup.dart';
 import 'package:pokedex/Utilities/Functions/api.dart';
 import 'package:pokedex/Utilities/Functions/dex_type.dart';
 import 'package:pokedex/Utilities/CustomWidgets/pokeimage.dart';
+import 'package:pokedex/Utilities/Functions/evo_detail_string.dart';
 import 'package:pokedex/Utilities/Functions/read_txt_file.dart';
 import 'package:pokedex/Utilities/Functions/string_extension.dart';
 import 'package:pokedex/layouts/pokemon_main.dart';
@@ -112,29 +114,60 @@ class _PokeDetailsState extends State<PokeDetails> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Theme.of(context).primaryColorLight,
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).primaryColor,
-        title: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text(
-            widget.snapshot.data!.name.capitalize(),
-            style: TextStyle(
-              fontSize: 30,
-              fontWeight: FontWeight.bold,
+      bottomNavigationBar: BottomAppBar(
+        height: MediaQuery.of(context).size.height / 17,
+        color: Theme.of(context).primaryColor,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            IconButton(
+              iconSize: 30,
+              icon: const Icon(Icons.groups_2),
               color: Theme.of(context).primaryColorLight,
+              onPressed: () {
+                print("group");
+              },
             ),
+            IconButton(
+              iconSize: 35,
+              icon: const Icon(Icons.favorite_border),
+              color: Theme.of(context).primaryColorLight,
+              onPressed: () {
+                print("favorites");
+              },
+            ),
+            IconButton(
+              iconSize: 35,
+              icon: const Icon(Icons.settings),
+              color: Theme.of(context).primaryColorLight,
+              onPressed: () {
+                print("settings");
+              },
+            ),
+          ],
+        ),
+      ),
+      appBar: AppBar(
+        toolbarHeight: MediaQuery.of(context).size.height / 20,
+        backgroundColor: Theme.of(context).primaryColor,
+        title: Text(
+          widget.snapshot.data!.name.capitalize(),
+          style: TextStyle(
+            fontSize: 30,
+            fontWeight: FontWeight.bold,
+            color: Theme.of(context).primaryColorLight,
           ),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Center(
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Column(
+      body: Center(
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
                     children: [
                       GestureDetector(
                           onTap: () => {
@@ -152,54 +185,45 @@ class _PokeDetailsState extends State<PokeDetails> {
                           onPressed: () => {detailsPopUp(context)}),
                     ],
                   ),
-                  SizedBox(width: MediaQuery.of(context).size.width / 3),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(height: MediaQuery.of(context).size.height / 20),
-                      CardText(
-                        'ID: ${widget.snapshot.data!.id}',
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(height: MediaQuery.of(context).size.height / 20),
+                    CardText(
+                      'ID: ${widget.snapshot.data!.id}',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    TextButton(
+                      onPressed: () => {
+                        pokedexPopUp(
+                            context, getDexType(widget.snapshot.data!.id)),
+                      },
+                      child: Text(
+                        getDexType(widget.snapshot.data!.id),
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
                           color: Theme.of(context).primaryColor,
                         ),
-                        textAlign: TextAlign.center,
                       ),
-                      TextButton(
-                        onPressed: () => {
-                          pokedexPopUp(
-                              context, getDexType(widget.snapshot.data!.id)),
-                        },
-                        child: Text(
-                          getDexType(widget.snapshot.data!.id),
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).primaryColor,
-                          ),
-                        ),
-                      ),
-                      PokeType(widget.snapshot.data!.types),
-                    ],
-                  ),
-                ],
-              ),
-              AbilitiesList(widget.snapshot.data!.abilities),
-              EvolutionDisplay(id: widget.snapshot.data!.id.toString()),
-              MovesDisplay(widget.snapshot.data!.moves),
-              LocationDisplay(widget.snapshot.data!.id), 
-              SizedBox(height: MediaQuery.of(context).size.height / 40),     
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  FavoritesDisplay(widget.snapshot.data!.id),
-                  SizedBox(width: MediaQuery.of(context).size.width / 25),
-                  TeamDisplay(widget.snapshot.data!.id),
-                ],
-              ),       
-            ],
-          ),
+                    ),
+                    PokeType(widget.snapshot.data!.types),
+                  ],
+                ),
+              ],
+            ),
+            AbilitiesList(widget.snapshot.data!.abilities),
+            EvolutionDisplay(id: widget.snapshot.data!.id.toString()),
+            MovesDisplay(widget.snapshot.data!.moves),
+            LocationDisplay(widget.snapshot.data!.id),
+            FavoritesDisplay(widget.snapshot.data!.id)
+          ],
         ),
       ),
     );
@@ -390,7 +414,9 @@ class EvolutionDisplay extends StatelessWidget {
                   child: SizedBox(
                     height: MediaQuery.of(context).size.height / 8,
                     width: MediaQuery.of(context).size.width,
-                    child: EvoImage(id, snapshot.data!.chain.allEvolutions,
+                    child: EvoImage(
+                        id,
+                        modifyIfUnique(snapshot.data!.chain.allEvolutions),
                         snapshot.data!.chain.allDetails),
                   ),
                 );
@@ -416,120 +442,52 @@ class EvoImage extends StatelessWidget {
   const EvoImage(this.currentId, this.allEvolutions, this.evoDetails,
       {super.key});
 
-  String evoDetailAttr(EvoDetails evoDetails) {
-    if (evoDetails.trigger == 'level-up') {
-      String level = evoDetails.minLevel.toString();
-      if (level == '') {
-        level = evoDetails.minHappiness.toString();
-        return 'Happy: $level';
-      } else {
-        return 'Level: $level';
-      }
-    } else if (evoDetails.trigger == 'use-item') {
-      return makePretty(evoDetails.item['name']);
-    } else if (evoDetails.trigger == 'trade') {
-      return 'Trade';
-    } else {
-      return evoDetails.trigger;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    if (allEvolutions.length == 1) {
-      return FutureBuilder<List<Image>>(
-        future: getImage(allEvolutions, 1.5),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return SizedBox(
-              child: Image(
-                image: snapshot.data![0].image,
-              ),
-            );
-          } else if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
-          }
-          return customProgressIndicator(context, Colors.white);
-        },
-      );
-    } else if (allEvolutions.length == 2) {
-      return FutureBuilder<List<Image>>(
-        future: getImage(allEvolutions, 1),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return SizedBox(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  GestureDetector(
-                    onTap: () =>
-                        selectedMon(context, allEvolutions[0], currentId),
-                    child: Image(
-                      image: snapshot.data![0].image,
-                    ),
-                  ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Flexible(
-                        child: Text(
-                          evoDetailAttr(evoDetails[0]),
-                          style: TextStyle(
-                            fontSize: 10,
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).primaryColor,
-                          ),
-                        ),
+    if (!isUniqueEvolution(allEvolutions[0])) {
+      if (allEvolutions.length == 1) {
+        return FutureBuilder<List<Image>>(
+          future: getImage(allEvolutions, 1.5),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return SizedBox(
+                child: Image(
+                  image: snapshot.data![0].image,
+                ),
+              );
+            } else if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            }
+            return customProgressIndicator(context, Colors.white);
+          },
+        );
+      } else if (allEvolutions.length == 2) {
+        return FutureBuilder<List<Image>>(
+          future: getImage(allEvolutions, 1),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return SizedBox(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    GestureDetector(
+                      onTap: () =>
+                          selectedMon(context, allEvolutions[0], currentId),
+                      child: Image(
+                        image: snapshot.data![0].image,
                       ),
-                      Icon(
-                        Icons.arrow_forward,
-                        color: Theme.of(context).primaryColor,
-                        size: 50,
-                      ),
-                    ],
-                  ),
-                  GestureDetector(
-                    onTap: () =>
-                        selectedMon(context, allEvolutions[1], currentId),
-                    child: Image(
-                      image: snapshot.data![1].image,
                     ),
-                  ),
-                ],
-              ),
-            );
-          } else if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
-          }
-          return customProgressIndicator(context, Colors.white);
-        },
-      );
-    } else if (allEvolutions.length == 3) {
-      return FutureBuilder<List<Image>>(
-        future: getImage(allEvolutions, .75),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return SizedBox(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  GestureDetector(
-                    onTap: () =>
-                        selectedMon(context, allEvolutions[0], currentId),
-                    child: Image(
-                      image: snapshot.data![0].image,
-                    ),
-                  ),
-                  Flexible(
-                    child: Column(
+                    Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(
-                          evoDetailAttr(evoDetails[0]),
-                          style: TextStyle(
-                            fontSize: 10,
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).primaryColor,
+                        Flexible(
+                          child: Text(
+                            evoDetailAttr(evoDetails[0]),
+                            style: TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).primaryColor,
+                            ),
                           ),
                         ),
                         Icon(
@@ -539,53 +497,138 @@ class EvoImage extends StatelessWidget {
                         ),
                       ],
                     ),
-                  ),
-                  GestureDetector(
-                    onTap: () =>
-                        selectedMon(context, allEvolutions[1], currentId),
-                    child: Image(
-                      image: snapshot.data![1].image,
+                    GestureDetector(
+                      onTap: () =>
+                          selectedMon(context, allEvolutions[1], currentId),
+                      child: Image(
+                        image: snapshot.data![1].image,
+                      ),
                     ),
-                  ),
-                  Flexible(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          evoDetailAttr(evoDetails[1]),
-                          style: TextStyle(
-                            fontSize: 10,
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).primaryColor,
+                  ],
+                ),
+              );
+            } else if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            }
+            return customProgressIndicator(context, Colors.white);
+          },
+        );
+      } else if (allEvolutions.length == 3) {
+        return FutureBuilder<List<Image>>(
+          future: getImage(allEvolutions, .75),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return SizedBox(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    GestureDetector(
+                      onTap: () =>
+                          selectedMon(context, allEvolutions[0], currentId),
+                      child: Image(
+                        image: snapshot.data![0].image,
+                      ),
+                    ),
+                    Flexible(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            evoDetailAttr(evoDetails[0]),
+                            style: TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).primaryColor,
+                            ),
                           ),
-                        ),
-                        Icon(
-                          Icons.arrow_forward,
-                          color: Theme.of(context).primaryColor,
-                          size: 50,
-                        ),
-                      ],
+                          Icon(
+                            Icons.arrow_forward,
+                            color: Theme.of(context).primaryColor,
+                            size: 50,
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  GestureDetector(
-                    onTap: () =>
-                        selectedMon(context, allEvolutions[2], currentId),
-                    child: Image(
-                      image: snapshot.data![2].image,
+                    GestureDetector(
+                      onTap: () =>
+                          selectedMon(context, allEvolutions[1], currentId),
+                      child: Image(
+                        image: snapshot.data![1].image,
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            );
-          } else if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
-          }
-          return customProgressIndicator(context, Colors.white);
-        },
-      );
-    } else {
-      return Text("TBC");
+                    Flexible(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            evoDetailAttr(evoDetails[1]),
+                            style: TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                          ),
+                          Icon(
+                            Icons.arrow_forward,
+                            color: Theme.of(context).primaryColor,
+                            size: 50,
+                          ),
+                        ],
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () =>
+                          selectedMon(context, allEvolutions[2], currentId),
+                      child: Image(
+                        image: snapshot.data![2].image,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            } else if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            }
+            return customProgressIndicator(context, Colors.white);
+          },
+        );
+      }
     }
+    return FutureBuilder<List<Image>>(
+      future: getImage(allEvolutions, .5),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return SizedBox(
+            child: GestureDetector(
+              onTap: () => uniqueEvolutionPopUp(
+                  context, allEvolutions, evoDetails, snapshot.data, currentId),
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text("Unique Evolution",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).primaryColor,
+                        )),
+                    Text("Click for more details",
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w400,
+                          color: Theme.of(context).primaryColor,
+                        )),
+                  ],
+                ),
+              ),
+            ),
+          );
+        } else if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        }
+        return customProgressIndicator(context, Colors.white);
+      },
+    );
   }
 }
 
@@ -613,8 +656,9 @@ void selectedMon(BuildContext context, String id, String currentMon) {
 }
 
 Future<List<Image>> getImage(List<String> ids, double scale) async {
+
   List<Image> images = [];
-  for (var id in ids) {
+  for (var id in ids) {      
     final response = await getData('pokemon', id);
     var data = jsonDecode(response);
     images.add(Image(
@@ -623,7 +667,7 @@ Future<List<Image>> getImage(List<String> ids, double scale) async {
         scale: 5 / scale,
       ),
     ));
-  }
+  }  
   return images;
 }
 
@@ -806,19 +850,21 @@ class MovesDisplay extends StatelessWidget {
               itemBuilder: (context, index) {
                 return Card(
                   color: Theme.of(context).secondaryHeaderColor,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: GestureDetector(
-                      onTap: () => moveDescripPopup(
-                          context, moves.keys.elementAt(index)),
-                      child: Text(
-                        type == 'level-up'
-                            ? '${makePretty(moves.keys.elementAt(index))} - Lvl ${moves.values.elementAt(index)}'
-                            : makePretty(moves.keys.elementAt(index)),
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                          color: Theme.of(context).primaryColor,
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: GestureDetector(
+                        onTap: () => moveDescripPopup(
+                            context, moves.keys.elementAt(index)),
+                        child: Text(
+                          type == 'level-up'
+                              ? '${makePretty(moves.keys.elementAt(index))} - Lvl ${moves.values.elementAt(index)}'
+                              : makePretty(moves.keys.elementAt(index)),
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).primaryColor,
+                          ),
                         ),
                       ),
                     ),
@@ -844,17 +890,20 @@ class MovesDisplay extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: SizedBox(
-        height: MediaQuery.of(context).size.height / 7,
+        height: MediaQuery.of(context).size.height / 10,
         width: MediaQuery.of(context).size.width,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Text(
-              'Moves',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).primaryColor,
+            Padding(
+              padding: const EdgeInsets.only(top: 5.0),
+              child: Text(
+                'Moves',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).primaryColor,
+                ),
               ),
             ),
             Row(
@@ -971,18 +1020,18 @@ class LocationDisplay extends StatelessWidget {
     final response = await locationGetData('pokemon', id);
     List<Location> locations = [];
     var data = jsonDecode(response);
-    for (var i = 0; i < data.length; i++) {         
-      locations.add(Location.fromJson(data[i]));        
-    }        
+    for (var i = 0; i < data.length; i++) {
+      locations.add(Location.fromJson(data[i]));
+    }
     return locations;
   }
 
-  void locationPopUp(BuildContext context){
+  void locationPopUp(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          contentPadding: const EdgeInsets.all(6.0),           
+          contentPadding: const EdgeInsets.all(6.0),
           backgroundColor: Theme.of(context).primaryColorLight,
           title: Center(
             child: Text(
@@ -996,7 +1045,7 @@ class LocationDisplay extends StatelessWidget {
           ),
           content: FutureBuilder<List<Location>>(
             future: fetchLocation(id),
-            builder: (context, snapshot) {              
+            builder: (context, snapshot) {
               if (snapshot.hasData) {
                 if (snapshot.data!.isEmpty) {
                   return Text(
@@ -1018,8 +1067,8 @@ class LocationDisplay extends StatelessWidget {
                         color: Theme.of(context).secondaryHeaderColor,
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Row( 
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,                           
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Flexible(
                                 child: Text(
@@ -1068,14 +1117,13 @@ class LocationDisplay extends StatelessWidget {
         );
       },
     );
-
   }
 
   String listGames(List<Versions> versions) {
     String games = '';
     for (var i = 0; i < versions.length; i++) {
       games += makePretty(versions[i].game);
-      if(i != versions.length - 1){
+      if (i != versions.length - 1) {
         games += '/';
       }
     }
@@ -1111,7 +1159,7 @@ class FavoritesDisplay extends StatelessWidget {
   const FavoritesDisplay(this.id, {super.key});
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     // just keep it simple for now
     return GestureDetector(
       onTap: () => {
@@ -1121,44 +1169,25 @@ class FavoritesDisplay extends StatelessWidget {
         color: Theme.of(context).primaryColor,
         child: SizedBox(
           height: MediaQuery.of(context).size.height / 16,
-          width: MediaQuery.of(context).size.width / 4,
           child: Center(
-            child: Icon(
-                Icons.favorite,
-                color: Theme.of(context).secondaryHeaderColor,
-              ),            
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class TeamDisplay extends StatelessWidget {
-  final int id;
-  const TeamDisplay(this.id, {super.key});
-
-  @override
-  Widget build(BuildContext context){
-    // just keep it simple for now
-    return GestureDetector(
-      onTap: () => {
-        print('Team Display'),
-      },
-      child: Card(
-        color: Theme.of(context).primaryColorDark,
-        child: SizedBox(
-          height: MediaQuery.of(context).size.height / 16,
-          width: MediaQuery.of(context).size.width / 2,
-          child: Center(
-            child: Text(
-              'Add to Team',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).secondaryHeaderColor,
-              ),
-            ),        
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Add to Favorites',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).primaryColorLight,
+                  ),
+                ),
+                SizedBox(width: MediaQuery.of(context).size.width / 40),
+                Icon(
+                  Icons.favorite,
+                  color: Theme.of(context).secondaryHeaderColor,
+                ),
+              ],
+            ),
           ),
         ),
       ),

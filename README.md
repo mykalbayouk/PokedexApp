@@ -8,6 +8,7 @@
 - sirfetchd 865
 - mrrime-galar 866
 - urshifu-rapid-strike 892 
+- Lycanroc 745 - 746 - 747
 - 984 - 995
 - 1005 - 1006 
 - 1009 - 1010
@@ -16,6 +17,12 @@
 // super special cases
 - Basculin name & evolution
 - meowstic name & evolution 
+
+// evolution cases
+- rockruff 744
+- wishiwashi 746
+
+
 
 (it appears if the name is wrong evololution post DNW)
 
@@ -32,7 +39,7 @@
 - [ ] add cry sounds when u click mon (maybe when u click shiny mon)
 
 // BUGS
-- [ ] on actual device, when you search pokemon, list does not move (need to figure out proper fix to jank fix)
+- [X] on actual device, when you search pokemon, list does not move (need to figure out proper fix to jank fix)
 - [ ] need to fix some evolutions that have more than 3 pokemon (eevee, etc)
  
 

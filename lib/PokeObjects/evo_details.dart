@@ -62,4 +62,25 @@ class EvoDetails {
     );
   }
 
+  void printDetails() {
+    print("gender: $gender \n"
+        "heldItem: $heldItem \n"
+        "item: $item \n"
+        "knownMove: $knownMove \n"
+        "knownMoveType: $knownMoveType \n"
+        "location: $location \n"
+        "minAffection: $minAffection \n"
+        "minBeauty: $minBeauty \n"
+        "minHappiness: $minHappiness \n"
+        "minLevel: $minLevel \n"
+        "needsOverworldRain: $needsOverworldRain \n"
+        "partySpecies: $partySpecies \n"
+        "partyType: $partyType \n"
+        "relativePhysicalStats: $relativePhysicalStats \n"
+        "timeOfDay: $timeOfDay \n"
+        "tradeSpecies: $tradeSpecies \n"
+        "turnUpsideDown: $turnUpsideDown \n"
+        "trigger: $trigger \n");
+  }
+
 }
