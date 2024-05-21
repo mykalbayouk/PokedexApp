@@ -28,6 +28,9 @@ The current iteration of the app is meant only for mobile devices.
 3. Run `flutter run` to start the application
 4. Enjoy!
 
+## Demo Video
+[![Pokedéx Recreation Demo](https://i9.ytimg.com/vi/Spbr_rA7hbw/mq1.jpg?sqp=CLi3tLIG-oaymwEmCMACELQB8quKqQMa8AEB-AHyAYAC4AOKAgwIABABGH8gEygTMA8=&rs=AOn4CLDb2e-fRsf1ylcwi5V5QMhk9vOoaA)](https://youtu.be/Spbr_rA7hbw)
+
 ## Screenshots
 ![Home Page](/assets/project_sc/pokedex_homescreen.png)
 ![Search Page](/assets/project_sc/pokedex_search.png)
