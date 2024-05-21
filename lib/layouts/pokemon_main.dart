@@ -64,45 +64,51 @@ FutureBuilder<Pokemon> setupPokemon(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  DexType(snapshot.data!.id),
-                  const SizedBox(width: 110),
-                  Text(
-                    'No. ${snapshot.data!.id}',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).primaryColor,
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    DexType(snapshot.data!.id),
+                    const SizedBox(width: 110),
+                    Text(
+                      'No. ${snapshot.data!.id}',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).primaryColor,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
               PokeImage(snapshot.data!.image, 1),
-              ElevatedButton(
-                style: ButtonStyle(
-                  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(11.0),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ElevatedButton(
+                  style: ButtonStyle(
+                    shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(11.0),
+                      ),
                     ),
                   ),
-                ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => PokeDetails(snapshot: snapshot)),
-                  );
-                },
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    snapshot.data!.name.capitalize(),
-                    style: TextStyle(
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).primaryColor,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => PokeDetails(snapshot: snapshot)),
+                    );
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      snapshot.data!.name.capitalize(),
+                      style: TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).primaryColor,
+                      ),
                     ),
                   ),
                 ),
@@ -191,7 +197,7 @@ class _PokemonMainState extends State<PokemonMain>
                   color: Theme.of(context).secondaryHeaderColor,
                   child: SizedBox(
                     height: options.length * 70.0,
-                    width: MediaQuery.of(context).size.width * .68,
+                    width: MediaQuery.of(context).size.width * .4,
                     child: ListView.separated(
                       padding: const EdgeInsets.all(5),
                       shrinkWrap: false,
@@ -290,7 +296,7 @@ class _PokemonMainState extends State<PokemonMain>
     bool isName = appstate.isName;
     return Scaffold(
       bottomNavigationBar: BottomAppBar(
-        height: MediaQuery.of(context).size.height / 20,
+        height: MediaQuery.of(context).size.height / 10,
         color: Theme.of(context).primaryColor,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -386,7 +392,7 @@ class PokeList extends StatelessWidget {
       return SizedBox(
         child: ImageIcon(
           Svg('assets/images/type_short_icons/$type.svg'),
-          size: 25,
+          size: 20,
           color: !selected
               ? chooseColor(type)
               : Theme.of(context).primaryColorLight,

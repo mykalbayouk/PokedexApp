@@ -15,9 +15,10 @@ class PokeImage extends StatelessWidget {
             children: <Widget>[
               Center(
                 child: SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.5,
-                    width: MediaQuery.of(context).size.width * 0.5,
+                    height: MediaQuery.of(context).size.height * 0.25,
+                    width: MediaQuery.of(context).size.width * 0.25,
                     child: Image(
+                      height: 5,                      
                       image: image.image,
                     )),
               ),
