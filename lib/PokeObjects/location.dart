@@ -1,24 +1,21 @@
-import 'package:pokedex/PokeObjects/region.dart';
+import 'package:pokedex/pokeobjects/versions.dart';
 
-class Location {
+class Location {  
+  // location its found
   final String name;
-  final int id;
-  final Region region;
-  final List gameIndices;  
+  final List<Versions> versions;
 
   Location({
     required this.name,
-    required this.id,
-    required this.region,
-    required this.gameIndices,
+    required this.versions,
   });
 
   factory Location.fromJson(Map<String, dynamic> json) {
     return Location(
-      name: json['name'],
-      id: json['id'],
-      region: json['region']['name'],
-      gameIndices: json['game_indices'],
+      name: json['location_area']['name'],
+      versions: (json['version_details'] as List)
+          .map((e) => Versions.fromJson(e))
+          .toList(),
     );
   }
 }

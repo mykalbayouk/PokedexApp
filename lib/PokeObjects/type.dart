@@ -1,4 +1,4 @@
-class Type {
+class PokeType {
   final String name;
   final int id;
   final List doubleDamageFrom;
@@ -10,7 +10,7 @@ class Type {
   final List pokemon;
   final List moves;
 
-  Type({
+  PokeType({
     required this.name,
     required this.id,
     required this.doubleDamageFrom,
@@ -23,8 +23,8 @@ class Type {
     required this.moves,
   });
 
-  factory Type.fromJson(Map<String, dynamic> json) {
-    return Type(
+  factory PokeType.fromJson(Map<String, dynamic> json) {
+    return PokeType(
       name: json['name'],
       id: json['id'],
       doubleDamageFrom: json['damage_relations']['double_damage_from'],
@@ -39,3 +39,5 @@ class Type {
   }
 
 }
+
+
