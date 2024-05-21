@@ -290,19 +290,11 @@ class _PokemonMainState extends State<PokemonMain>
     bool isName = appstate.isName;
     return Scaffold(
       bottomNavigationBar: BottomAppBar(
-        height: MediaQuery.of(context).size.height / 17,
+        height: MediaQuery.of(context).size.height / 20,
         color: Theme.of(context).primaryColor,
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            IconButton(
-              iconSize: 30,
-              icon: const Icon(Icons.groups_2),
-              color: Theme.of(context).primaryColorLight,
-              onPressed: () {
-                print("group");
-              },
-            ),
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[            
             IconButton(
               iconSize: 35,
               icon: const Icon(Icons.search),
@@ -310,15 +302,7 @@ class _PokemonMainState extends State<PokemonMain>
               onPressed: () {
                 showPokemonPopUp(context);
               },
-            ),
-            IconButton(
-              iconSize: 35,
-              icon: const Icon(Icons.settings),
-              color: Theme.of(context).primaryColorLight,
-              onPressed: () {
-                print("settings");
-              },
-            ),
+            ),            
           ],
         ),
       ),

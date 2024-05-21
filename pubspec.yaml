@@ -1,5 +1,5 @@
 name: pokedex
-description: "PokedexApp"
+description: "Personal Recreation of the iconic Pokdéx in Flutter"
 publish_to: 'none'
 version: 1.0.0
 
@@ -7,9 +7,6 @@ environment:
   sdk: '>=3.3.0 <4.0.0'
 
 dependencies:
-  firebase_auth: ^4.19.5
-  firebase_core: ^2.31.0
-  firebase_ui_auth: ^1.14.0
   flutter:
     sdk: flutter
   flutter_launcher_icons: ^0.13.1

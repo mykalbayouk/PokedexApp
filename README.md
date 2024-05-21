@@ -1,45 +1,43 @@
-# pokedex
+# Pokedéx Recreation
 
-// Special cases
-- nidoran -m/-f 30/31
-- Mr-mime 122
-- farfetchd 83
-- mime-jr 439
-- sirfetchd 865
-- mrrime-galar 866
-- urshifu-rapid-strike 892 
-- Lycanroc 745 - 746 - 747
-- 984 - 995
-- 1005 - 1006 
-- 1009 - 1010
-- 1020 - 1023 
+## Description
+This project is a recreation of the Pokedéx from the Pokémon series. It is a mobile application that allows users to search for Pokémon by name or ID and view their details. The application uses the [PokéAPI](https://pokeapi.co/) to fetch Pokémon data.
 
-// super special cases
-- Basculin name & evolution
-- meowstic name & evolution 
+Nearly every aspect of this app is clickable, including the Pokémon themselves, which will take you to a detailed view of the Pokémon. The detailed view includes the Pokémon's name, ID, type, abilities, stats and more. 
 
-// evolution cases
-- rockruff 744
-- wishiwashi 746
+The current iteration of the app is meant only for mobile devices. 
+
+## Features
+- Search for Pokémon by name or ID
+- View Pokémon details
+- Clickable Pokémon sprites
+- View Types and Matchups for said type
+- View Abilities and their effects
+- View Evolutionary chain and how to evolve
+- View Moves and their effects, types and stats
+- View where to find this pokemon in actual games
+
+## Technologies
+- Flutter API
+- Dart
+- PokéAPI
+
+## Installation
+1. Clone the repository
+2. Run `flutter pub get` to install dependencies
+3. Run `flutter run` to start the application
+4. Enjoy!
+
+## Screenshots
+![Home Page](/assets/project_sc/pokedex_homescreen.png)
+![Search Page](/assets/project_sc/pokedex_search.png)
+![Detail Page](/assets/project_sc/pokedex_detail.png)
+![Description Page](/assets/project_sc/pokedex_description.png)
+![Unique Evolution Page](/assets/project_sc/pokedex_evolution.png)
+![Type Page](/assets/project_sc/pokedex_type.png)
+![Ability Page](/assets/project_sc/pokedex_ability.png)
+![Move Page](/assets/project_sc/pokedex_move.png)
+![Location Page](/assets/project_sc/pokedex_location.png)
 
 
-
-(it appears if the name is wrong evololution post DNW)
-
-
-// TODO
-- [X] modify abilities screen in details popup to show quick description abt each ability (may move to seperate location)
-- [X] add types to details screen below Dex Type
-- [X] add popup when you click dex
-- [X] open new screen when click where to find (or popup)
-- [X] add evolution chain to details screen
-- - [X] make evolution pokemon clickable to pop details and go to main screen
-- [X] add moves to details screen  ** 
-- [ ] add favorite button to bottom of details screen
-- [ ] add cry sounds when u click mon (maybe when u click shiny mon)
-
-// BUGS
-- [X] on actual device, when you search pokemon, list does not move (need to figure out proper fix to jank fix)
-- [ ] need to fix some evolutions that have more than 3 pokemon (eevee, etc)
- 
 

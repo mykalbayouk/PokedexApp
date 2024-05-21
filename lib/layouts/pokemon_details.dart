@@ -113,42 +113,9 @@ class _PokeDetailsState extends State<PokeDetails> {
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: Theme.of(context).primaryColorLight,
-      bottomNavigationBar: BottomAppBar(
-        height: MediaQuery.of(context).size.height / 17,
-        color: Theme.of(context).primaryColor,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            IconButton(
-              iconSize: 30,
-              icon: const Icon(Icons.groups_2),
-              color: Theme.of(context).primaryColorLight,
-              onPressed: () {
-                print("group");
-              },
-            ),
-            IconButton(
-              iconSize: 35,
-              icon: const Icon(Icons.favorite_border),
-              color: Theme.of(context).primaryColorLight,
-              onPressed: () {
-                print("favorites");
-              },
-            ),
-            IconButton(
-              iconSize: 35,
-              icon: const Icon(Icons.settings),
-              color: Theme.of(context).primaryColorLight,
-              onPressed: () {
-                print("settings");
-              },
-            ),
-          ],
-        ),
-      ),
+      backgroundColor: Theme.of(context).primaryColorLight,    
       appBar: AppBar(
-        toolbarHeight: MediaQuery.of(context).size.height / 20,
+        toolbarHeight: MediaQuery.of(context).size.height / 16,
         backgroundColor: Theme.of(context).primaryColor,
         title: Text(
           widget.snapshot.data!.name.capitalize(),
@@ -222,7 +189,7 @@ class _PokeDetailsState extends State<PokeDetails> {
             EvolutionDisplay(id: widget.snapshot.data!.id.toString()),
             MovesDisplay(widget.snapshot.data!.moves),
             LocationDisplay(widget.snapshot.data!.id),
-            FavoritesDisplay(widget.snapshot.data!.id)
+            // FavoritesDisplay(widget.snapshot.data!.id)
           ],
         ),
       ),
@@ -890,7 +857,7 @@ class MovesDisplay extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: SizedBox(
-        height: MediaQuery.of(context).size.height / 10,
+        height: MediaQuery.of(context).size.height / 8,
         width: MediaQuery.of(context).size.width,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -1154,43 +1121,3 @@ class LocationDisplay extends StatelessWidget {
   }
 }
 
-class FavoritesDisplay extends StatelessWidget {
-  final int id;
-  const FavoritesDisplay(this.id, {super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    // just keep it simple for now
-    return GestureDetector(
-      onTap: () => {
-        print('Favorites Display'),
-      },
-      child: Card(
-        color: Theme.of(context).primaryColor,
-        child: SizedBox(
-          height: MediaQuery.of(context).size.height / 16,
-          child: Center(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'Add to Favorites',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).primaryColorLight,
-                  ),
-                ),
-                SizedBox(width: MediaQuery.of(context).size.width / 40),
-                Icon(
-                  Icons.favorite,
-                  color: Theme.of(context).secondaryHeaderColor,
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}

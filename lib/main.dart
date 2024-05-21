@@ -1,17 +1,9 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:pokedex/firebase_options.dart';
-import 'package:pokedex/layouts/login.dart';
 import 'package:pokedex/layouts/pokemon_details.dart';
 import 'package:pokedex/layouts/pokemon_main.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-
   runApp(const MainApp());
 }
 
@@ -35,7 +27,7 @@ class MainApp extends StatelessWidget {
             cardColor: const Color.fromARGB(255, 199, 199, 199),
             primaryColorDark: const Color.fromARGB(255, 82, 0, 0),                        
           ),
-          home: const AuthGate(),
+          home: const PokemonMain(),
         );
       },
     );
