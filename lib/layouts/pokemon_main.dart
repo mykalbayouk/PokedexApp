@@ -2,11 +2,14 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:pokedex/PokeObjects/pokemon.dart';
-import 'package:pokedex/Utilities/pokeimage.dart';
-import 'package:pokedex/Utilities/read_txt_file.dart';
-import 'package:pokedex/Utilities/api.dart';
-import 'package:pokedex/Utilities/string_extension.dart';
-import 'package:pokedex/pokemon_details.dart';
+import 'package:pokedex/Utilities/CustomWidgets/custom_progress.dart';
+import 'package:pokedex/Utilities/Functions/dex_type.dart';
+import 'package:pokedex/Utilities/CustomWidgets/pokeimage.dart';
+import 'package:pokedex/Utilities/Functions/read_txt_file.dart';
+import 'package:pokedex/Utilities/Functions/api.dart';
+import 'package:pokedex/Utilities/Functions/string_extension.dart';
+import 'package:pokedex/Utilities/Functions/type_color.dart';
+import 'package:pokedex/layouts/pokemon_details.dart';
 import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
@@ -78,7 +81,14 @@ FutureBuilder<Pokemon> setupPokemon(
               ),
               PokeImage(snapshot.data!.image, 1),
               ElevatedButton(
-                onPressed: () {                  
+                style: ButtonStyle(
+                  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(11.0),
+                    ),
+                  ),
+                ),
+                onPressed: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -97,7 +107,7 @@ FutureBuilder<Pokemon> setupPokemon(
                   ),
                 ),
               ),
-              const SizedBox(height: 50),
+              SizedBox(height: MediaQuery.of(context).size.height / 30),
               PokeList(pokeList),
             ],
           ),
@@ -105,7 +115,8 @@ FutureBuilder<Pokemon> setupPokemon(
       } else if (snapshot.hasError) {
         return Text('${snapshot.error}');
       }
-      return const CircularProgressIndicator();
+      return customProgressIndicator(
+          context, Theme.of(context).secondaryHeaderColor);
     },
   );
 }
@@ -182,7 +193,7 @@ class _PokemonMainState extends State<PokemonMain>
                     height: options.length * 70.0,
                     width: MediaQuery.of(context).size.width * .68,
                     child: ListView.separated(
-                      padding: EdgeInsets.all(5),
+                      padding: const EdgeInsets.all(5),
                       shrinkWrap: false,
                       itemCount: options.length,
                       itemBuilder: (BuildContext context, int index) {
@@ -248,13 +259,15 @@ class _PokemonMainState extends State<PokemonMain>
             ),
             TextButton(
               onPressed: () {
-                if (isName) {
-                  appstate.setName(myValue.toLowerCase());
-                } else {
-                  appstate.setId(int.parse(myValue));
-                }
-                appstate.setUpdated(true);
-                Navigator.of(context).pop();
+                setState(() {
+                  if (isName) {
+                    appstate.setName(myValue.toLowerCase());
+                  } else {
+                    appstate.setId(int.parse(myValue));
+                  }
+                  appstate.setUpdated(true);
+                  Navigator.of(context).pop();
+                });
               },
               child: Text(
                 'OK',
@@ -276,30 +289,25 @@ class _PokemonMainState extends State<PokemonMain>
     String name = appstate.name;
     bool isName = appstate.isName;
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      backgroundColor: Theme.of(context).primaryColorLight,
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).primaryColor,
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(3.0),
-          child: RotationTransition(
-            turns: Tween(begin: 0.0, end: 1.0).animate(_controller),
-            child: IconButton(
-              splashColor: Colors.transparent,
-              highlightColor: Colors.transparent,
-              icon: Image.asset(
-                'assets/images/Pokeball.png',
-                height: MediaQuery.of(context).size.height / 20,
-                width: MediaQuery.of(context).size.width,
-              ),
+      bottomNavigationBar: BottomAppBar(
+        height: MediaQuery.of(context).size.height / 20,
+        color: Theme.of(context).primaryColor,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[            
+            IconButton(
+              iconSize: 35,
+              icon: const Icon(Icons.search),
+              color: Theme.of(context).primaryColorLight,
               onPressed: () {
-                _controller.forward(from: 0.0);
                 showPokemonPopUp(context);
               },
-            ),
-          ),
+            ),            
+          ],
         ),
       ),
+      resizeToAvoidBottomInset: false,
+      backgroundColor: Theme.of(context).primaryColorLight,
       body: setupPokemon(id, name, isName, pokeList),
     );
   }
@@ -308,30 +316,6 @@ class _PokemonMainState extends State<PokemonMain>
 class DexType extends StatelessWidget {
   final int id;
   const DexType(this.id, {super.key});
-
-  String getDexType(int id) {
-    if (id < 152) {
-      return 'Kanto';
-    } else if (id < 252) {
-      return 'Johto';
-    } else if (id < 387) {
-      return 'Hoenn';
-    } else if (id < 494) {
-      return 'Sinnoh';
-    } else if (id < 650) {
-      return 'Unova';
-    } else if (id < 722) {
-      return 'Kalos';
-    } else if (id < 810) {
-      return 'Alola';
-    } else if (id < 898) {
-      return 'Galar';
-    } else if (id < 905) {
-      return 'Hisui';
-    } else {
-      return 'Paldea';
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -357,7 +341,6 @@ class DexType extends StatelessWidget {
 
 // ignore: must_be_immutable
 class PokeList extends StatelessWidget {
-  static int test = 0;
   final List<String> pokeListFull;
 
   PokeList(this.pokeListFull, {super.key});
@@ -377,72 +360,27 @@ class PokeList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    test++;
     ItemScrollController scrollController = ItemScrollController();
     ItemPositionsListener itemPositionsListener =
         ItemPositionsListener.create();
     var appstate = context.read<PokeAppState>();
     int id = appstate.id;
 
-    List<String> pokeList = parsePL();
+    List<String> pokeList = parsePL();    
 
-    // worlds most jank solution to a problem
-    if (test % 2 != 0 && appstate.updated == true) {
+    if (appstate.updated) {
       Future.delayed(Duration.zero, () {
         scrollController.scrollTo(
           index: id - 1,
           duration: const Duration(seconds: 1),
           curve: Curves.easeInOut,
-        );
-        appstate.setUpdated(false);
+        );        
       });
-    }
-
-    Color chooseColor(String type) {
-      if (type == 'Grass') {
-        return Colors.green;
-      } else if (type == 'Poison') {
-        return Colors.purple;
-      } else if (type == 'Fire') {
-        return Colors.orange;
-      } else if (type == 'Water') {
-        return Colors.blue;
-      } else if (type == 'Bug') {
-        return Colors.green;
-      } else if (type == 'Normal') {
-        return Colors.grey;
-      } else if (type == 'Electric') {
-        return Colors.yellowAccent.shade700;
-      } else if (type == 'Ground') {
-        return Colors.brown;
-      } else if (type == 'Fairy') {
-        return Colors.pink;
-      } else if (type == 'Fighting') {
-        return Colors.red;
-      } else if (type == 'Psychic') {
-        return Colors.purple;
-      } else if (type == 'Rock') {
-        return Colors.brown;
-      } else if (type == 'Steel') {
-        return Colors.grey;
-      } else if (type == 'Ice') {
-        return Colors.blue;
-      } else if (type == 'Ghost') {
-        return Colors.purple;
-      } else if (type == 'Dragon') {
-        return Colors.blue;
-      } else if (type == 'Flying') {
-        return Colors.blue;
-      } else if (type == 'Dark') {
-        return Colors.black;
-      } else {
-        return Colors.grey;
-      }
     }
 
     SizedBox typeIcon(String type, bool selected) {
       if (type == '') {
-        return SizedBox();
+        return const SizedBox();
       }
 
       return SizedBox(
@@ -461,7 +399,7 @@ class PokeList extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),
       ),
-      child: Container(
+      child: Container(        
         padding: const EdgeInsets.all(10),
         width: MediaQuery.of(context).size.width / 1.25,
         height: MediaQuery.of(context).size.height / 4,

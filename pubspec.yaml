@@ -1,5 +1,5 @@
 name: pokedex
-description: "PokedexApp"
+description: "Personal Recreation of the iconic Pokdéx in Flutter"
 publish_to: 'none'
 version: 1.0.0
 
@@ -10,6 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_launcher_icons: ^0.13.1
+  flutter_svg: ^2.0.10+1
   flutter_svg_provider: ^1.0.7
   http: ^1.2.1
   provider: ^6.1.1
@@ -18,7 +19,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^3.0.0
+  flutter_lints: ^4.0.0
 
 flutter_launcher_icons:
   ios: true
@@ -29,4 +30,6 @@ flutter:
   assets:
     - assets/images/
     - assets/images/type_short_icons/
+    - assets/images/type_long_icons/
+    - assets/images/attack_type/
     - assets/raw/
