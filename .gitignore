@@ -36,6 +36,8 @@ migrate_working_dir/
 /linux/
 /macos/
 /windows/
+/test/
+/.vscode/
 
 # Symbolication related
 app.*.symbols
