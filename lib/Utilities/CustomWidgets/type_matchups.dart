@@ -8,11 +8,13 @@ import 'package:pokedex/Utilities/Functions/type_color.dart';
 import 'package:pokedex/pokeobjects/type.dart';
 import 'package:pokedex/Utilities/Functions/string_extension.dart';
 
+/// A widget that represents the type matchups of a Pokemon.
 class TypeMatchups extends StatelessWidget {
   final List<dynamic> types;
 
   const TypeMatchups(this.types, {super.key});
 
+/// Fetches the type from the API.
   Future<List<PokeType>> fetchType(List<String> url) async {
     List<PokeType> typeList = [];
     for (var i = 0; i < url.length; i++) {
@@ -22,9 +24,13 @@ class TypeMatchups extends StatelessWidget {
     return typeList;
   }
 
+/// Organizes the matchups of the types. 
+/// The matchups are divided into double damage from, half damage from, and no damage from.
+/// The superType is a map that contains the types that have more than one type that has the same damage from.
   void organizeMatchups(List<PokeType> data, Map<String, List> matchups,
       Map<String, bool> superType) {
     for (var i = 0; i < data.length; i++) {
+      // each iteration of this loop, i will get the matchups of the type at index i
       List<String> doubleDamageFrom = [];
       List<String> halfDamageFrom = [];
       List<String> noDamageFrom = [];
@@ -44,7 +50,7 @@ class TypeMatchups extends StatelessWidget {
       matchups['halfDamageFrom']?.addAll(halfDamageFrom);
       matchups['noDamageFrom']?.addAll(noDamageFrom);
     }
-
+  
     List<String> removedItems = [];
     for (var i = 0; i < matchups['doubleDamageFrom']!.length; i++) {
       if (matchups['halfDamageFrom']!
@@ -98,6 +104,7 @@ class TypeMatchups extends StatelessWidget {
     }
   }
 
+  /// Builds the widget.
   @override
   Widget build(BuildContext context) {
     List<String> url = [];

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// A custom progress indicator widget.
 Container customProgressIndicator(BuildContext context, Color color) {
   return Container(
     height: MediaQuery.of(context).size.height / 30,

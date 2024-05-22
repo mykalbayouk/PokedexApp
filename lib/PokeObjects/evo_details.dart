@@ -1,3 +1,8 @@
+/// EvoDetails class, stores:
+/// gender, heldItem, item, knownMove, knownMoveType, location, minAffection,
+/// minBeauty, minHappiness, minLevel, needsOverworldRain, partySpecies,
+/// partyType, relativePhysicalStats, timeOfDay, tradeSpecies, turnUpsideDown,
+/// and trigger.
 class EvoDetails {
   late var gender;
   late var heldItem;

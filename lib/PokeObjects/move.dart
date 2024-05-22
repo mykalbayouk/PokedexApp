@@ -1,5 +1,5 @@
-
-
+/// This class is used to create a Move object, which is used to store the data of a move.
+/// The data stored includes the name, accuracy, power, pp, type, damage class, and description of the move.
 class Move {
   final String name;  
   final int accuracy;

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+/// A class that represents a Pokemon.
+/// Stores the name, id, height, weight, image, sprite, shinySprite, types,
+/// abilities, and moves of the Pokemon.
 class Pokemon {
   final String name;
   final int id;

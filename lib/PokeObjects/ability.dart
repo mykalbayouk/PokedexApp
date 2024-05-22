@@ -1,3 +1,4 @@
+/// Ability class, used to store the ability name and description
 class Ability {
   final String name;
   final String description;

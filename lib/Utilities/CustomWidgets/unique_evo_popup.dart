@@ -19,6 +19,9 @@ int evoType = 0;
 // type 4 will be for applin since he has type 2 and type 3
 
 // type 3 is only wurmple so i can hard code that same with type 4
+
+/// Checks if the evolution is unique.
+/// If it is, it will return true and set the evoType to the corresponding type.
 bool isUniqueEvolution(String pokemon) {
   switch (pokemon) {
     case 'oddish':
@@ -83,6 +86,7 @@ bool isUniqueEvolution(String pokemon) {
   }
 }
 
+/// Custom height for the unique evolution pop up.
 int customHeight(int numOfEvos) {
   if (numOfEvos <= 5) {
     return 3;
@@ -93,6 +97,7 @@ int customHeight(int numOfEvos) {
   }
 }
 
+/// Modifies the evolutions if they are unique in the api.
 List<String> modifyIfUnique(List<dynamic> evolutions) {
   List<String> newEvolutions = [];
   if (evolutions[0] == 'rockruff') {
@@ -130,6 +135,12 @@ List<String> modifyIfUnique(List<dynamic> evolutions) {
   return newEvolutions;
 }
 
+/// Displays the unique evolution pop up.
+/// if type 1, it will display the first image, then an arrow, then the second image, then the third images in a column.
+/// if type 2, it will display the first image, then an arrow, then all the second images in a column.
+/// if type 3, it will display the first image, then an arrow, then the two second images, then the two third images in a column.
+/// if type 4 or applin's type, it displays first image, then an arrow, then a column for the first two finals and the third spot in the column
+/// is a row with the third final and the fourth final.
 void uniqueEvolutionPopUp(BuildContext context, List<dynamic> evolutions,
     List<EvoDetails> evoDetails, List<Image>? evoImages, String currentId) {
   showDialog(

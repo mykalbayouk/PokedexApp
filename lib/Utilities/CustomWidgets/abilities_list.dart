@@ -7,16 +7,18 @@ import 'package:pokedex/Utilities/Functions/api.dart';
 import 'package:pokedex/Utilities/Functions/string_extension.dart';
 import 'package:pokedex/pokeobjects/ability.dart';
 
+/// A wiudget that represents the list of abilities of a Pokemon.
 class AbilitiesList extends StatelessWidget {
   final List abilities;
   const AbilitiesList(this.abilities, {super.key});
 
+/// Fetches the ability from the API.
   Future<Ability> fetchAbility(String url) async {
     url = url.replaceAll('https://pokeapi.co/api/v2/ability/', '').replaceAll('/', '');    
     final response = await getData('ability', url);
     return Ability.fromJson(jsonDecode(response));
   }
-
+/// Makes the ability name pretty.
   void abilityPopUp(BuildContext context, String ability, String url, bool isHidden) {    
     showDialog(
       context: context,
@@ -30,11 +32,13 @@ class AbilitiesList extends StatelessWidget {
                 color: Theme.of(context).primaryColor,
               )
           ),
+          // Builds the ability description.
           content: FutureBuilder<Ability>(
             future: fetchAbility(url),
             builder: (context, snapshot) {
               if (snapshot.hasData) {                
                 return Text(
+                  // If the ability is hidden, display 'HIDDEN ABILITY' before the description.
                   isHidden ? 'HIDDEN ABILITY\n\n${snapshot.data!.description}' :
                   snapshot.data!.description,
                   style: TextStyle(
@@ -59,7 +63,7 @@ class AbilitiesList extends StatelessWidget {
       },
     );
   }
-
+  /// Builds AbilitiesList widget.
   @override
   Widget build(BuildContext context) {
     return Card(      
@@ -75,6 +79,7 @@ class AbilitiesList extends StatelessWidget {
                 color: Theme.of(context).primaryColor,
               ),
             ),             
+            // for each ability, build a card with the ability name.
             for (var ability in abilities)
               Flexible(
                 child: GestureDetector(

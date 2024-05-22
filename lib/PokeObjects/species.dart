@@ -1,3 +1,6 @@
+/// Species class
+/// This class is used to store the species data of a pokemon
+/// The data stored includes the evolution chain id, flavor text entries, and genus of the species
 class Species {
   final String evolutionChainID;
   final List<dynamic> flavorTextEntries;

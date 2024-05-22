@@ -1,5 +1,7 @@
 import 'package:pokedex/pokeobjects/versions.dart';
 
+/// A class that represents the location where a Pokemon can be found.
+/// Stores the name of the location and the versions where it can be found.
 class Location {  
   // location its found
   final String name;

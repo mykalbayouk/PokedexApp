@@ -14,45 +14,51 @@ import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 
+/// State management class for the PokemonMain widget
 class PokeAppState extends ChangeNotifier {
   int id = 1;
   String name = "bulbasaur";
   bool isName = false;
   bool updated = false;
 
+  /// sets the ID of the Pokemon
   void setId(int newId) {
     id = newId;
     notifyListeners();
   }
 
+  /// sets the name of the Pokemon
   void setName(String newName) {
     name = newName;
     isName = true;
     notifyListeners();
   }
-
+/// sets the updated status of the Pokemon
   void setUpdated(bool newUpdated) {
     updated = newUpdated;
     notifyListeners();
   }
 }
-
+/// Fetches the Pokemon data from the API using the ID
 Future<Pokemon> fetchPokemon(int id) async {
   final response = await getData('pokemon', id.toString());
   return Pokemon.fromJson(jsonDecode(response));
 }
 
+/// Fetches the Pokemon data from the API using the name
 Future<Pokemon> fetchPokemonName(String name) async {
   final response = await getData('pokemon', name);
   return Pokemon.fromJson(jsonDecode(response));
 }
 
+/// Sets up the Pokemon Main Screen 
 FutureBuilder<Pokemon> setupPokemon(
     int id, String name, bool isName, List<String> pokeList) {
   return FutureBuilder<Pokemon>(
     future: isName ? fetchPokemonName(name) : fetchPokemon(id),
     builder: (context, snapshot) {
       if (snapshot.hasData) {
+        // if the user searched by name, set the ID to the ID of the Pokemon
         if (isName) {
           context.watch<PokeAppState>().id = snapshot.data!.id;
         }
@@ -79,7 +85,9 @@ FutureBuilder<Pokemon> setupPokemon(
                   ),
                 ],
               ),
+              // Display the Pokemon image
               PokeImage(snapshot.data!.image, 1),
+              // Button clicks to go to the Pokemon Details page
               ElevatedButton(
                 style: ButtonStyle(
                   shape: WidgetStateProperty.all<RoundedRectangleBorder>(
@@ -108,6 +116,7 @@ FutureBuilder<Pokemon> setupPokemon(
                 ),
               ),
               SizedBox(height: MediaQuery.of(context).size.height / 30),
+              // Display the list of Pokemon
               PokeList(pokeList),
             ],
           ),
@@ -121,6 +130,7 @@ FutureBuilder<Pokemon> setupPokemon(
   );
 }
 
+/// The main Pokemon screen showing the Pokemon image and list of Pokemon
 class PokemonMain extends StatefulWidget {
   const PokemonMain({super.key});
 
@@ -134,6 +144,7 @@ class _PokemonMainState extends State<PokemonMain>
 
   List<String> pokeList = [];
 
+  /// Loads the list of Pokemon from the text file
   void pokelist() async {
     String data = await loadAsset('assets/raw/poke_list.txt');
     setState(() {
@@ -141,6 +152,7 @@ class _PokemonMainState extends State<PokemonMain>
     });
   }
 
+  /// Initializes the animation controller
   @override
   void initState() {
     super.initState();
@@ -152,12 +164,14 @@ class _PokemonMainState extends State<PokemonMain>
     super.initState();
   }
 
+  /// Disposes the animation controller
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
   }
 
+  /// Shows the Pokemon search popup
   void showPokemonPopUp(BuildContext context) {
     var appstate = context.read<PokeAppState>();
     var myValue;
@@ -179,6 +193,7 @@ class _PokemonMainState extends State<PokemonMain>
               color: Theme.of(context).primaryColorLight,
             ),
           ),
+          // creates autocomplete for the Pokemon search using the pokeList
           content: Autocomplete<String>(
             optionsViewBuilder: (context, onSelected, options) {
               return Align(
@@ -236,6 +251,7 @@ class _PokemonMainState extends State<PokemonMain>
                 return option.contains(textEditingValue.text.capitalize());
               });
             },
+            // sets the value of the Pokemon search
             onSelected: (var selection) {
               if (selection is int) {
                 isName = false;
@@ -313,6 +329,7 @@ class _PokemonMainState extends State<PokemonMain>
   }
 }
 
+/// Displays the Pokedex the pokemon is found in
 class DexType extends StatelessWidget {
   final int id;
   const DexType(this.id, {super.key});
@@ -339,6 +356,7 @@ class DexType extends StatelessWidget {
   }
 }
 
+/// Displays the list of Pokemon using the text file
 // ignore: must_be_immutable
 class PokeList extends StatelessWidget {
   final List<String> pokeListFull;
@@ -358,6 +376,7 @@ class PokeList extends StatelessWidget {
     return pokeList;
   }
 
+  /// Displays the list of Pokemon using a ScrollablePositionedList
   @override
   Widget build(BuildContext context) {
     ItemScrollController scrollController = ItemScrollController();
@@ -403,6 +422,7 @@ class PokeList extends StatelessWidget {
         padding: const EdgeInsets.all(10),
         width: MediaQuery.of(context).size.width / 1.25,
         height: MediaQuery.of(context).size.height / 4,
+        // displays list using ScrollablePositionedList
         child: ScrollablePositionedList.builder(
           itemScrollController: scrollController,
           itemPositionsListener: itemPositionsListener,

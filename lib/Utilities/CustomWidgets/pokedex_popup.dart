@@ -6,11 +6,13 @@ import 'package:pokedex/Utilities/Functions/api.dart';
 import 'package:pokedex/Utilities/Functions/string_extension.dart';
 import 'package:pokedex/pokeobjects/pokedex.dart';
 
+/// Fetches the Pokedex from the API.
 Future<Pokedex> fetchPokedex(String url) async {
   final response = await getData('pokedex', url);
   return Pokedex.fromJson(jsonDecode(response));
 }
 
+/// A widget that represents the Pokedex popup.
 void pokedexPopUp(BuildContext context, String name) {    
   String getDexName(String name){
     switch(name){
@@ -39,6 +41,7 @@ void pokedexPopUp(BuildContext context, String name) {
     }
   }
 
+  /// Gets the range of the Pokedex.
   String getDexRange(String name){
     switch(name){
       case 'Kanto':

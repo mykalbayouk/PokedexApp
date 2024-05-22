@@ -1,4 +1,4 @@
-
+/// Evolution object stores the name of the Pokemon that the current Pokemon evolves into.
 class Evolution {
   final String name;
 

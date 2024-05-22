@@ -1,4 +1,5 @@
 import 'package:pokedex/pokeobjects/chain.dart';
+/// A class that represents the chain of evolutions of a Pokemon.
 class GetChain {
   final Chain chain;
   // final List<EvoDetails> details;

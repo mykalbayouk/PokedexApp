@@ -7,6 +7,7 @@ void main() async {
   runApp(const MainApp());
 }
 
+/// The main app widget.
 class MainApp extends StatelessWidget {
   const MainApp({super.key});
   @override
@@ -19,6 +20,7 @@ class MainApp extends StatelessWidget {
       builder: (context, child) {
         return MaterialApp(
           title: 'Pokedex App',
+          // Custom Theme
           theme: ThemeData(
             useMaterial3: true,
             primaryColor: const Color.fromARGB(255, 159, 0, 0),

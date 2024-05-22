@@ -1,3 +1,4 @@
+/// This class is used to create a PokeType object that is used to store the data of a type of pokemon.
 class PokeType {
   final String name;
   final int id;

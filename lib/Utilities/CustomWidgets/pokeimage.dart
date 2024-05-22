@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+/// A custom image widget used to display the Pokemon image.
+/// Displays the image in a frame. Using an adjuster, the size of the image can be adjusted.
 class PokeImage extends StatelessWidget {
   final Image image;
   final double adjuster;

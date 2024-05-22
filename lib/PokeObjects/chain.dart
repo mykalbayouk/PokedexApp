@@ -1,6 +1,8 @@
 import 'package:pokedex/pokeobjects/evo_details.dart';
 import 'package:pokedex/pokeobjects/evolution.dart';
 
+/// A class that represents the evolution chain of a Pokemon, including the
+/// species and details of the evolution.
 class Chain {
   final List<Chain> evolvesTo;
   final Evolution species;

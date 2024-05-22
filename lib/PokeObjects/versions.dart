@@ -1,3 +1,4 @@
+/// This class is used to store the version and method of the encounter of a pokemon.
 class Versions {
   final String game;
   final String method;

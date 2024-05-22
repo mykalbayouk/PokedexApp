@@ -3,9 +3,7 @@
 import 'dart:convert';
 import 'dart:math';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart' as http;
 import 'package:pokedex/PokeObjects/pokemon.dart';
@@ -30,26 +28,32 @@ import 'package:pokedex/pokeobjects/species.dart';
 import 'package:pokedex/pokeobjects/versions.dart';
 import 'package:provider/provider.dart';
 
+// variables for entire class
 bool isPressed = false;
 List<String> pokeList = [];
 
+/// This class is the main class for the details page of a pokemon.
 class DetailAppState extends ChangeNotifier {
+  //method to change the state of the button
   void changePressed() {
     isPressed = !isPressed;
     notifyListeners();
   }
 }
 
+/// This function fetches the species data from the API.
 Future<Species> fetchSpecies(String id) async {
   final response = await getData('pokemon-species', id);
   return Species.fromJson(jsonDecode(response));
 }
 
+/// This function fetches the evolution chain data from the API.
 Future<GetChain> fetchEvolutionChain(String id) async {
   final response = await getData('evolution-chain', id);
   return GetChain.fromJson(jsonDecode(response));
 }
 
+/// Main PokeDetails class
 class PokeDetails extends StatefulWidget {
   AsyncSnapshot<Pokemon> snapshot;
 
@@ -59,6 +63,7 @@ class PokeDetails extends StatefulWidget {
   State<PokeDetails> createState() => _PokeDetailsState();
 }
 
+/// State class for PokeDetails
 class _PokeDetailsState extends State<PokeDetails> {
   void pokelist() async {
     String data = await loadAsset('assets/raw/poke_list.txt');
@@ -67,6 +72,7 @@ class _PokeDetailsState extends State<PokeDetails> {
     });
   }
 
+  /// This function initializes the state of the class.
   @override
   void initState() {
     super.initState();
@@ -74,10 +80,13 @@ class _PokeDetailsState extends State<PokeDetails> {
     isPressed = false;
   }
 
+  /// This function creates a pop-up for the details of the pokemon.
   void detailsPopUp(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
+
+        // Creates and Alert Dialog
         return AlertDialog(
           backgroundColor: Theme.of(context).primaryColorLight,
           title: CardText(
@@ -89,6 +98,7 @@ class _PokeDetailsState extends State<PokeDetails> {
             ),
             textAlign: TextAlign.center,
           ),
+          // Content of the Alert Dialog, pulled from species API call
           content: speciesBuilder(widget.snapshot.data!.id.toString(),
               widget.snapshot.data!.height, widget.snapshot.data!.weight),
           actions: <Widget>[
@@ -104,19 +114,25 @@ class _PokeDetailsState extends State<PokeDetails> {
     );
   }
 
+  /// Builds the PokeDetails Screen
   @override
   Widget build(BuildContext context) {
+    // Get the current state of this file
     var appState = context.read<DetailAppState>();
+    // This checks if the shiny sprite is to be displayed
     var sprite = isPressed
         ? widget.snapshot.data!.shinySprite
         : widget.snapshot.data!.sprite;
 
+    // Scaffold for the PokeDetails Screen
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Theme.of(context).primaryColorLight,    
+      // AppBar for the PokeDetails Screen
       appBar: AppBar(
         toolbarHeight: MediaQuery.of(context).size.height / 16,
         backgroundColor: Theme.of(context).primaryColor,
+        // Title of the AppBar
         title: Text(
           widget.snapshot.data!.name.capitalize(),
           style: TextStyle(
@@ -126,6 +142,7 @@ class _PokeDetailsState extends State<PokeDetails> {
           ),
         ),
       ),
+      // Main body of the PokeDetails Screen
       body: Center(
         child: Column(
           children: [
@@ -134,10 +151,13 @@ class _PokeDetailsState extends State<PokeDetails> {
               children: [
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Column(
+                  child: 
+                  // Sets up the image and the more info button
+                  Column(
                     children: [
                       GestureDetector(
                           onTap: () => {
+                            // Changes the state of the button
                                 setState(() {
                                   appState.changePressed();
                                 })
@@ -153,6 +173,7 @@ class _PokeDetailsState extends State<PokeDetails> {
                     ],
                   ),
                 ),
+                // Sets up the ID and the types of the pokemon
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -185,6 +206,7 @@ class _PokeDetailsState extends State<PokeDetails> {
                 ),
               ],
             ),
+            // Abilities, Evolution, Moves, and Location Displays
             AbilitiesList(widget.snapshot.data!.abilities),
             EvolutionDisplay(id: widget.snapshot.data!.id.toString()),
             MovesDisplay(widget.snapshot.data!.moves),
@@ -197,7 +219,9 @@ class _PokeDetailsState extends State<PokeDetails> {
   }
 }
 
+/// This function creates the details screen from the info button.
 FutureBuilder<Species> speciesBuilder(String id, int height, int weight) {
+  // pulls data from the species API call
   return FutureBuilder<Species>(
     future: fetchSpecies(id),
     builder: (context, snapshot) {
@@ -237,7 +261,9 @@ FutureBuilder<Species> speciesBuilder(String id, int height, int weight) {
                   ),
                 ],
               ),
+              /// spacer
               SizedBox(height: MediaQuery.of(context).size.height / 40),
+              // displays random flavor text from the species API call
               Text(
                 makePretty(snapshot.data!.flavorTextEntries[
                     Random().nextInt(snapshot.data!.flavorTextEntries.length)]),
@@ -259,14 +285,17 @@ FutureBuilder<Species> speciesBuilder(String id, int height, int weight) {
   );
 }
 
+/// Type Class used to display all info about a pokemon's type.
 class PokeType extends StatelessWidget {
   final List types;
   const PokeType(this.types, {super.key});
 
+  /// Fix in order to use .captilize() on a string
   String fixy(String fix) {
     return fix.capitalize();
   }
 
+  /// This function creates a pop-up for the type matchups of the pokemon.
   void typePopUp(BuildContext context, List types) {
     showDialog(
       context: context,
@@ -283,6 +312,7 @@ class PokeType extends StatelessWidget {
               ),
             ),
           ),
+          // Content of the Alert Dialog
           content: TypeMatchups(types),
           actions: <Widget>[
             IconButton(
@@ -302,6 +332,7 @@ class PokeType extends StatelessWidget {
                           ),
                         ),
                       ),
+                      // Special content for the type matchups
                       content: SizedBox(
                         height: MediaQuery.of(context).size.height / 20,
                         width: MediaQuery.of(context).size.width / 1.5,
@@ -345,6 +376,7 @@ class PokeType extends StatelessWidget {
     );
   }
 
+  /// Builds the PokeType Screen
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -354,6 +386,7 @@ class PokeType extends StatelessWidget {
       child: SizedBox(
         child: Column(
           children: [
+            // displays the types of the pokemon
             for (var type in types)
               SvgPicture.asset(
                   'assets/images/type_long_icons/${fixy(type['type']['name'])}.svg'),
@@ -364,19 +397,24 @@ class PokeType extends StatelessWidget {
   }
 }
 
+/// This function creates the evolution display for the pokemon.
 class EvolutionDisplay extends StatelessWidget {
   final String id;
   const EvolutionDisplay({super.key, required this.id});
+  /// Builds the Evolution Display
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<Species>(
+      // fetches the species data
       future: fetchSpecies(id),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return FutureBuilder<GetChain>(
+            // fetches the evolution chain data
             future: fetchEvolutionChain(snapshot.data!.evolutionChainID),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
+                // returns the evolution chain, function to be called if unique
                 return Card(
                   child: SizedBox(
                     height: MediaQuery.of(context).size.height / 8,
@@ -400,8 +438,10 @@ class EvolutionDisplay extends StatelessWidget {
       },
     );
   }
-}
+} 
 
+
+/// This widget displays each evolution in the chain.
 class EvoImage extends StatelessWidget {
   final String currentId;
   final List<String> allEvolutions;
@@ -409,11 +449,17 @@ class EvoImage extends StatelessWidget {
   const EvoImage(this.currentId, this.allEvolutions, this.evoDetails,
       {super.key});
 
+  /// Builds the evolution chain depending on the number of evolutions and the type
+  /// of evolution. 
+  /// If the evolution is not unique, the chain is displayed in a row, and # of pokemon is dependent on the number of evolutions.
+  /// If the evolution is unique, the chain is displayed in an alert dialog.
   @override
   Widget build(BuildContext context) {
+    // if the evolution is not unique
     if (!isUniqueEvolution(allEvolutions[0])) {
       if (allEvolutions.length == 1) {
         return FutureBuilder<List<Image>>(
+          // gets the image of each evoltuion in the array
           future: getImage(allEvolutions, 1.5),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
@@ -561,6 +607,8 @@ class EvoImage extends StatelessWidget {
         );
       }
     }
+
+    // Fetches the images of evolution to be stored into a list then displayed in a pop-up since the evolution is unique
     return FutureBuilder<List<Image>>(
       future: getImage(allEvolutions, .5),
       builder: (context, snapshot) {
@@ -599,6 +647,7 @@ class EvoImage extends StatelessWidget {
   }
 }
 
+/// This function selects the pokemon to be displayed in the details page.
 void selectedMon(BuildContext context, String id, String currentMon) {
   String cMon = pokeList[int.parse(currentMon) - 1].split(',')[0];
   if (id != cMon.toLowerCase()) {
@@ -622,6 +671,7 @@ void selectedMon(BuildContext context, String id, String currentMon) {
   }
 }
 
+/// This function fetches the image data from the API. And returns a list of images.
 Future<List<Image>> getImage(List<String> ids, double scale) async {
 
   List<Image> images = [];
@@ -638,15 +688,19 @@ Future<List<Image>> getImage(List<String> ids, double scale) async {
   return images;
 }
 
+/// The widget displays the moves of the pokemon.
 class MovesDisplay extends StatelessWidget {
   final List moves;
   const MovesDisplay(this.moves, {super.key});
 
+
+/// This function fetches the move data from the API.
   Future<Move> fetchMove(String move) async {
     final response = await getData('move', move);
     return Move.fromJson(jsonDecode(response));
   }
 
+/// This function creates a pop-up for the move description of the pokemon.
   moveDescripPopup(BuildContext context, String move) {
     showDialog(
       context: context,
@@ -663,16 +717,20 @@ class MovesDisplay extends StatelessWidget {
               ),
             ),
           ),
+          // Content of the Alert Dialog
           content: FutureBuilder<Move>(
             future: fetchMove(move),
-            builder: (context, snapshot) {
+            builder: (context, snapshot) {              
               if (snapshot.hasData) {
+                // determines the length of the screen based on the length of the description
                 int lengthOfScreen = 0;
                 if (snapshot.data!.description.length > 40) {
                   lengthOfScreen = 5;
                 } else {
                   lengthOfScreen = 8;
                 }
+
+                // returns the move description
                 return SizedBox(
                   height: MediaQuery.of(context).size.height / lengthOfScreen,
                   width: MediaQuery.of(context).size.width,
@@ -772,10 +830,12 @@ class MovesDisplay extends StatelessWidget {
       },
     );
   }
-
-  // 0 - lvl up, 1 - tm, 2 - tutor, 3 - egg
+  /// This function creates a pop-up for the moves of the pokemon.
+  /// 0 - lvl up, 1 - tm, 2 - tutor, 3 - egg
   movesPopUp(BuildContext context, List movesUN, String type) {
     Map<String, int> moves = {};
+
+    // adds the level of the move to the moves map, if no level, adds 0
     for (var i = 0; i < movesUN.length; i++) {
       int versionGroupDetailsLength =
           movesUN[i]['version_group_details'].length;
@@ -790,8 +850,8 @@ class MovesDisplay extends StatelessWidget {
           moves[movesUN[i]['move']['name']] = 0;
         }
       }
-    }
-    // i want to organize the moves by level learned
+    }    
+    // organizes the moves in level order
     moves = Map.fromEntries(
         moves.entries.toList()..sort((e1, e2) => e1.value.compareTo(e2.value)));
     showDialog(
@@ -823,6 +883,7 @@ class MovesDisplay extends StatelessWidget {
                       child: GestureDetector(
                         onTap: () => moveDescripPopup(
                             context, moves.keys.elementAt(index)),
+                            // if move is a level up move, displays the level of the move
                         child: Text(
                           type == 'level-up'
                               ? '${makePretty(moves.keys.elementAt(index))} - Lvl ${moves.values.elementAt(index)}'
@@ -853,6 +914,7 @@ class MovesDisplay extends StatelessWidget {
     );
   }
 
+  /// Builds the Moves Display
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -968,10 +1030,13 @@ class MovesDisplay extends StatelessWidget {
   }
 }
 
+/// This widget displays the location of the pokemon.
 class LocationDisplay extends StatelessWidget {
   final int id;
   const LocationDisplay(this.id, {super.key});
 
+
+  /// This function fetches the location data from the API.
   Future locationGetData(String type, int describer) async {
     Uri url =
         Uri.parse('https://pokeapi.co/api/v2/$type/$describer/encounters');
@@ -983,6 +1048,7 @@ class LocationDisplay extends StatelessWidget {
     }
   }
 
+  /// This function fetches the location data from the locationGetData function.
   Future<List<Location>> fetchLocation(int id) async {
     final response = await locationGetData('pokemon', id);
     List<Location> locations = [];
@@ -990,6 +1056,7 @@ class LocationDisplay extends StatelessWidget {
     for (var i = 0; i < data.length; i++) {
       locations.add(Location.fromJson(data[i]));
     }
+    locations.sort((a, b) => a.name.compareTo(b.name));
     return locations;
   }
 
@@ -1016,7 +1083,7 @@ class LocationDisplay extends StatelessWidget {
               if (snapshot.hasData) {
                 if (snapshot.data!.isEmpty) {
                   return Text(
-                    'Only found by Evolving',
+                    'Only found by Evolving or Event Pokémon',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w300,
@@ -1038,6 +1105,7 @@ class LocationDisplay extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Flexible(
+                                // location name
                                 child: Text(
                                   listGames(snapshot.data![index].versions),
                                   style: TextStyle(
@@ -1046,9 +1114,7 @@ class LocationDisplay extends StatelessWidget {
                                     color: Theme.of(context).primaryColor,
                                   ),
                                 ),
-                              ),
-                              // i want it so that the first text is on the left and the second is on the right
-
+                              ),                              
                               Flexible(
                                 child: Text(
                                   makePretty(snapshot.data![index].name),
@@ -1086,6 +1152,7 @@ class LocationDisplay extends StatelessWidget {
     );
   }
 
+  /// returns the games the pokemon is found in
   String listGames(List<Versions> versions) {
     String games = '';
     for (var i = 0; i < versions.length; i++) {
@@ -1097,6 +1164,7 @@ class LocationDisplay extends StatelessWidget {
     return games;
   }
 
+  /// Builds the Location Display
   @override
   Widget build(BuildContext context) {
     return GestureDetector(

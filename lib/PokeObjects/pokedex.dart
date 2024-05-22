@@ -1,3 +1,4 @@
+/// Pokedex object stores the description of the Pokemon.
 class Pokedex {
   final String description;
 

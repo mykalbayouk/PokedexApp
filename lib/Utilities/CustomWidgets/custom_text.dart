@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+/// A custom text widget. 
+/// Displays text in a card with a specified style and alignment.
 class CardText extends StatelessWidget {
   final String text;
   final TextStyle style;
@@ -23,6 +25,8 @@ class CardText extends StatelessWidget {
   }
 }
 
+/// A custom button widget. 
+/// Displays a button in a card with a specified text, onPressed function, and color.
 class ButtonCard extends StatelessWidget {
   final String text;
   final Function onPressed;
