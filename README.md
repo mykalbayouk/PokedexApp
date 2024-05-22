@@ -5,7 +5,7 @@ This project is a recreation of the Pokedéx from the Pokémon series. It is a m
 
 Nearly every aspect of this app is clickable, including the Pokémon themselves, which will take you to a detailed view of the Pokémon. The detailed view includes the Pokémon's name, ID, type, abilities, stats and more. 
 
-The current iteration of the app is meant only for mobile devices. 
+The current iteration of the app is meant only for mobile devices. But a web version exist at the link below.
 
 ## Features
 - Search for Pokémon by name or ID
@@ -21,6 +21,9 @@ The current iteration of the app is meant only for mobile devices.
 - Flutter API
 - Dart
 - PokéAPI
+
+## Try Yourself!
+![Web Version](https://mykalbayouk.github.io/pokedex_webApp/)
 
 ## Installation
 1. Clone the repository
