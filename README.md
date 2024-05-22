@@ -23,7 +23,7 @@ The current iteration of the app is meant only for mobile devices. But a web ver
 - PokéAPI
 
 ## Try Yourself!
-![Web Version](https://mykalbayouk.github.io/pokedex_webApp/)
+[Web Version](https://mykalbayouk.github.io/pokedex_webApp/)
 
 ## Installation
 1. Clone the repository
