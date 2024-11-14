@@ -34,16 +34,7 @@ The current iteration of the app is meant only for mobile devices. But a web ver
 ## Demo Video
 [![Pokedéx Recreation Demo](https://i9.ytimg.com/vi/Spbr_rA7hbw/mq1.jpg?sqp=CLi3tLIG-oaymwEmCMACELQB8quKqQMa8AEB-AHyAYAC4AOKAgwIABABGH8gEygTMA8=&rs=AOn4CLDb2e-fRsf1ylcwi5V5QMhk9vOoaA)](https://youtu.be/Spbr_rA7hbw)
 
-## Screenshots
-![Home Page](/assets/project_sc/pokedex_homescreen.png)
-![Search Page](/assets/project_sc/pokedex_search.png)
-![Detail Page](/assets/project_sc/pokedex_detail.png)
-![Description Page](/assets/project_sc/pokedex_description.png)
-![Unique Evolution Page](/assets/project_sc/pokedex_evolution.png)
-![Type Page](/assets/project_sc/pokedex_type.png)
-![Ability Page](/assets/project_sc/pokedex_ability.png)
-![Move Page](/assets/project_sc/pokedex_move.png)
-![Location Page](/assets/project_sc/pokedex_location.png)
+
 
 
 
